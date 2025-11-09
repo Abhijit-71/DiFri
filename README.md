@@ -1,4 +1,4 @@
-
+## Do check the Desktop branch for latest commits on desktop build , android development is paused by the owner if intrested you can visit Android branch.
 
 # DiFri Browser
 ![Project logo](Desktop/svg/dbrowser_logo.svg)
