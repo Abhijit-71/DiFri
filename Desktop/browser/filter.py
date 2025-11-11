@@ -1,6 +1,9 @@
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtCore import QUrl
 from urllib.parse import urlparse, parse_qs
+import os
+import base64
+import os
 
 
 """ These filters might seem obscene or vulgar , but these are important for a safe web experience for kids and also helpful for
@@ -42,12 +45,65 @@ def registered_domain(hostname: str) -> str | None:
     return '.'.join(parts[-2:]) if len(parts) >= 2 else hostname
 
 class FilterPage(QWebEnginePage):
+    def __init__(self, profile, parent=None):
+        super().__init__(profile, parent)
+        # path to local pdf viewer HTML
+    self.pdf_viewer_html = os.path.join(os.getcwd(), 'static', 'pdf_viewer.html')
+
     def acceptNavigationRequest(self, url: QUrl, nav_type, isMainFrame: bool):
        
         if not isMainFrame:
             return super().acceptNavigationRequest(url, nav_type, isMainFrame)
 
         parsed = urlparse(url.toString())
+
+        # Check if this is a PDF URL
+        url_string = url.toString().lower()
+        path_lower = (parsed.path or '').lower()
+        is_pdf = url_string.endswith('.pdf') or path_lower.endswith('.pdf')
+        print(f"[PDF Check] URL: {url.toString()}, is_pdf: {is_pdf}", flush=True)
+
+        if is_pdf:
+            try:
+                viewer_url = QUrl.fromLocalFile(self.pdf_viewer_html)
+                view = self.parent()
+                if view is not None:
+                    print(f"[PDF] Navigating to viewer: {self.pdf_viewer_html}", flush=True)
+                    view.setUrl(viewer_url)
+                    def on_load(ok):
+                        print(f"[pdf-preview] viewer loadFinished: {ok}", flush=True)
+                        if ok:
+                            try:
+                                # Always send the PDF as a data URL if local, else as a remote URL
+                                if url.isLocalFile():
+                                    local_path = url.toLocalFile()
+                                    print(f"[pdf-preview] local PDF path: {local_path}", flush=True)
+                                    with open(local_path, 'rb') as f:
+                                        b = f.read()
+                                    b64 = base64.b64encode(b).decode('ascii')
+                                    data_url = f"data:application/pdf;base64,{b64}"
+                                    script = "window.postMessage({type: 'loadPDF', url: '%s'}, '*');" % data_url.replace("'", "\\'")
+                                else:
+                                    pdf_url = url.toString()
+                                    script = "window.postMessage({type: 'loadPDF', url: '%s'}, '*');" % pdf_url.replace("'", "\\'")
+                                self.runJavaScript(script)
+                                print(f"[pdf-preview] posted PDF url to viewer", flush=True)
+                            except Exception as e:
+                                print(f"[pdf-preview] failed to send PDF: {e}", flush=True)
+                        try:
+                            view.loadFinished.disconnect(on_load)
+                        except Exception:
+                            pass
+                    view.loadFinished.connect(on_load)
+                    print(f"[PDF] viewer loadFinished handler connected", flush=True)
+                    return False
+                else:
+                    print(f"[PDF] No parent view found for PDF navigation", flush=True)
+            except Exception as e:
+                print(f"[PDF] Exception during PDF navigation: {e}", flush=True)
+            # Always block default navigation for PDF
+            return False
+
         domain = registered_domain(parsed.hostname or "")
         qs = parse_qs(parsed.query)
         search_term = qs.get("q", [""])[0].lower()

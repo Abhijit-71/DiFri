@@ -32,7 +32,6 @@ sys.argv.extend(dns_config)
 
 app = QApplication(sys.argv)
 
-
 tab_manager = TabManager()
 CentralWidget = PaddedWindow(tab_manager,"#181826")
 

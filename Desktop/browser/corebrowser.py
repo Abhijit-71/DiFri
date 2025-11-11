@@ -41,13 +41,20 @@ class Browser:
         
     
 
-    #@staticmethod
     def download_req(self,download:QWebEngineDownloadRequest):
         
         suggested_name = download.downloadFileName()
+        url = download.url().toString()
     
-        print(f"trigerred {suggested_name}")
+        print(f"Download triggered: {suggested_name}, URL: {url}")
+        
+        # Block PDF downloads - they should be handled by the PDF viewer
+        if suggested_name.lower().endswith('.pdf') or url.lower().endswith('.pdf'):
+            print("Blocking PDF download - should be handled by PDF viewer")
+            download.cancel()
+            return
 
+        # Handle other downloads normally
         path,_ = QFileDialog.getSaveFileName(
             None,
             "dBrowser Download Manager",
