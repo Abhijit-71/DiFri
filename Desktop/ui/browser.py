@@ -5,7 +5,7 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from .coreui import ProgressBar
 from browser.new_filter import FilterPage
-from browser.pdf_viewer import PDFViewer
+from browser.local_pdfjs_viewer import LocalPDFJSViewer
 import os
 
 
@@ -24,7 +24,7 @@ class BrowserWindow(QWidget):
         self.browser = QWebEngineView()
         self.filtered_page = FilterPage(self._profile, self.browser)
         self.browser.setPage(self.filtered_page)
-        self.pdf_handler = PDFViewer()
+        self.pdf_handler = LocalPDFJSViewer()
         # intercept downloads (PDF links often trigger a download) and open viewer instead
         try:
             profile = self.browser.page().profile()

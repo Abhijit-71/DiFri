@@ -44,37 +44,19 @@ class FilterPage(QWebEnginePage):
 
     def acceptNavigationRequest(self, url: QUrl, nav_type, isMainFrame: bool):
         try:
-            print(f"[FILTER] acceptNavigationRequest called", flush=True)
-            print(f"[FILTER] isMainFrame: {isMainFrame}", flush=True)
-            
             if not isMainFrame:
-                print(f"[FILTER] Not main frame, allowing", flush=True)
                 return super().acceptNavigationRequest(url, nav_type, isMainFrame)
 
-            print(f"[FILTER] Processing main frame navigation", flush=True)
             url_string = url.toString()
-            print(f"[FILTER] URL string: {url_string}", flush=True)
-            
             parsed = urlparse(url_string)
-            print(f"[FILTER] URL parsed successfully", flush=True)
         except Exception as e:
-            print(f"[FILTER] ERROR in initial processing: {e}", flush=True)
+            print(f"[FILTER] ERROR: {e}", flush=True)
             return super().acceptNavigationRequest(url, nav_type, isMainFrame)
         
-        # PDF זיהוי מושבת זמנית
-        if url_string.lower().endswith('.pdf'):
-            print(f"[PDF] PDF זוהה אך לא מטופל: {url_string}", flush=True)
-            # נתן לדפדפן לטפל בזה רגיל
-            pass
-
         # Regular filtering
         domain = registered_domain(parsed.hostname or "")
         qs = parse_qs(parsed.query)
         search_term = qs.get("q", [""])[0].lower()
-
-        print(f"[FILTER] → Navigating to {domain}, search={search_term!r}", flush=True)
-        print(f"[FILTER] Full URL: {url_string}", flush=True)
-        print(f"[FILTER] Is main frame: {isMainFrame}", flush=True)
 
         if domain in BLOCKED_DOMAINS or any(k in str(domain) for k in KEYWORDS):
             self.setHtml(f"<h2>Blocked</h2><p>{domain} is restricted.</p>")
