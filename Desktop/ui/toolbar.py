@@ -81,6 +81,9 @@ class URLTab(QWidget):
 
     def change_src(self,src:str):
         if src.startswith('https://') or src.startswith('http://'):
+            # Check if it's a PDF
+            if src.lower().endswith('.pdf'):
+                print(f"[PDF] Detected PDF URL: {src}")
             self.browser.setUrl(QUrl(src))
         else:
             query = quote_plus(src)

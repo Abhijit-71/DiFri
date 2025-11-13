@@ -1,10 +1,7 @@
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtCore import QUrl
 from urllib.parse import urlparse, parse_qs
-
-
-""" These filters might seem obscene or vulgar , but these are important for a safe web experience for kids and also helpful for
-not ruining your life .... Tip => Dont check KEYWORDS and BLOCKED_DOMAINS unless contributing."""
+import os
 
 KEYWORDS = [
     "porn", "sex", "erotic", "nudity", "xxx", "adult", "hentai", "fetish", "webcam", "pornographic",
@@ -34,7 +31,6 @@ BLOCKED_DOMAINS = [
     "teenxy.com","kamababa.desi","nakedgirls.com", "nudeart.com", "xxxtentacion.com", "bustybabe.com", "camgirl.com", "tubepornclassic.com","spankbang.com","pornhat.com"
 ]
 
-
 def registered_domain(hostname: str) -> str | None:
     if not hostname:
         return None
@@ -42,29 +38,33 @@ def registered_domain(hostname: str) -> str | None:
     return '.'.join(parts[-2:]) if len(parts) >= 2 else hostname
 
 class FilterPage(QWebEnginePage):
-    def acceptNavigationRequest(self, url: QUrl, nav_type, isMainFrame: bool):
-       
-        if not isMainFrame:
-            return super().acceptNavigationRequest(url, nav_type, isMainFrame)
+    def __init__(self, profile, parent=None):
+        super().__init__(profile, parent)
+        self.web_view = parent  # Store reference to the web view
 
-        parsed = urlparse(url.toString())
+    def acceptNavigationRequest(self, url: QUrl, nav_type, isMainFrame: bool):
+        try:
+            if not isMainFrame:
+                return super().acceptNavigationRequest(url, nav_type, isMainFrame)
+
+            url_string = url.toString()
+            parsed = urlparse(url_string)
+        except Exception as e:
+            print(f"[FILTER] ERROR: {e}", flush=True)
+            return super().acceptNavigationRequest(url, nav_type, isMainFrame)
+        
+        # Regular filtering
         domain = registered_domain(parsed.hostname or "")
         qs = parse_qs(parsed.query)
         search_term = qs.get("q", [""])[0].lower()
 
-        print(f"→ Navigating to {domain}, search={search_term!r}", flush=True)
-
-        # Block full domains
         if domain in BLOCKED_DOMAINS or any(k in str(domain) for k in KEYWORDS):
             self.setHtml(f"<h2>Blocked</h2><p>{domain} is restricted.</p>")
             return False
 
-        # Block search terms (Google, Bing, etc.)
         if domain in ("google.com", "bing.com", "duckduckgo.com", "yahoo.com","brave.com"):
             if any(k in search_term for k in KEYWORDS):
                 self.setHtml("<h2>Blocked Search</h2><p>Search contains blocked keywords.</p>")
                 return False
 
-        # otherwise allow navigation
         return super().acceptNavigationRequest(url, nav_type, isMainFrame)
-

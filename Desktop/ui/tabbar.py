@@ -8,11 +8,11 @@ class TabManager(QWidget):
     def __init__(self):
         super().__init__()
         
-        self.index = 1 #index for tabs
+        self.index = 1  # Index for tabs
         
         self.download_manager = DownloadManager()
         self.download_tab = DownloadTab(self.download_manager)
-        self.browser_instance = Browser(self.download_manager)  #called once for only one profile for each startup 
+        self.browser_instance = Browser(self.download_manager)  # Called once for only one profile for each startup 
 
         layout = QVBoxLayout()
         layout.setContentsMargins(0,0,0,0)
@@ -77,7 +77,7 @@ class TabManager(QWidget):
          
         
         # main browserwindow incl. toolbar
-        self.browser_window = BrowserWindow(self.browser_instance) #passed profile (which was created once)
+        self.browser_window = BrowserWindow(self.browser_instance)  # Passed profile (which was created once)
         self.browser_window.toolbar.home.clicked.connect(self.add_tab)
         self.browser_window.toolbar.download.clicked.connect(self.add_download_tab)
         self.TabBar.addTab(self.browser_window,"New Tab")
@@ -89,7 +89,7 @@ class TabManager(QWidget):
         
         
     def add_tab(self):
-            tab_content = BrowserWindow(self.browser_instance) #passed profile (which was created once)
+            tab_content = BrowserWindow(self.browser_instance)  # Passed profile (which was created once)
             tab_content.toolbar.home.clicked.connect(self.add_tab)
             tab_content.toolbar.download.clicked.connect(self.add_download_tab)
 
@@ -147,21 +147,7 @@ class IconTextWidget(QWidget):
 
         text_label = QLabel(text)
         text_label.setFixedWidth(max_text_width)
-        """text_label.setStyleSheet(
-    QLabel {
-        color: white;
-        font-size: 12px;
-        background: qlineargradient(
-            x1:0, y1:0, x2:1, y2:0,
-            stop:0 rgba(71, 50, 125, 0),
-            stop:0.6 rgba(71, 50, 125, 40),
-            stop:0.7 rgba(64, 45, 114, 100),
-            stop:0.85 rgba(64, 45, 112, 200),
-            stop:1 rgba(71, 50, 125, 255)
-        );
-        border-radius:0px
-    }
-)"""     # was for faded , text in title of tabs did not work
+        # Commented out: was for faded text in title of tabs but did not work
 
         layout.addWidget(icon_label)
         layout.addWidget(text_label)
