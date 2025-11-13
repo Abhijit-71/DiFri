@@ -1,13 +1,13 @@
 """
-Local PDF.js Viewer - Full PDF functionality with text selection
-===============================================================
+PDF.js Viewer - Full PDF functionality with text selection
+==========================================================
 
-Uses a local PDF.js implementation for complete PDF functionality:
+Uses PDF.js CDN for complete PDF functionality:
 - Text selection and copying
 - Search within PDF
 - Zoom controls
 - Page navigation
-- No external dependencies
+- Requires internet connection for PDF.js library
 """
 
 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -19,7 +19,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class PDFDownloader(QThread):
-    """Downloads PDF for local PDF.js viewer"""
+    """Downloads PDF for PDF.js viewer"""
     pdf_ready = pyqtSignal(str)  # base64_data
     error = pyqtSignal(str)
     
@@ -39,20 +39,20 @@ class PDFDownloader(QThread):
         except Exception as e:
             self.error.emit(str(e))
 
-class LocalPDFJSViewer:
-    """Local PDF.js viewer with full functionality"""
+class PDFJSViewer:
+    """PDF.js viewer with full functionality"""
     
     def __init__(self):
         self.downloader = None
     
     def show_pdf(self, web_view: QWebEngineView, pdf_url: str):
-        """Display PDF with local PDF.js"""
-        print(f"📄 Loading Local PDF.js: {pdf_url}")
+        """Display PDF with PDF.js"""
+        print(f"📄 Loading PDF.js: {pdf_url}")
         
         self.show_loading(web_view, pdf_url)
         
         self.downloader = PDFDownloader(pdf_url)
-        self.downloader.pdf_ready.connect(lambda data: self.display_local_pdfjs(web_view, data, pdf_url))
+        self.downloader.pdf_ready.connect(lambda data: self.display_pdfjs(web_view, data, pdf_url))
         self.downloader.error.connect(lambda err: self.show_error(web_view, pdf_url, err))
         self.downloader.start()
     
@@ -84,8 +84,8 @@ class LocalPDFJSViewer:
         """
         web_view.setHtml(loading_html)
     
-    def display_local_pdfjs(self, web_view: QWebEngineView, pdf_base64: str, original_url: str):
-        """Display PDF with local PDF.js implementation"""
+    def display_pdfjs(self, web_view: QWebEngineView, pdf_base64: str, original_url: str):
+        """Display PDF with PDF.js implementation"""
         filename = original_url.split('/')[-1].split('?')[0]
         if len(filename) > 50:
             filename = filename[:47] + "..."
@@ -189,7 +189,7 @@ class LocalPDFJSViewer:
                     right: 0;
                     bottom: 0;
                     overflow: hidden;
-                    opacity: 1.0;
+                    opacity: 0.2;
                     line-height: 1.0;
                 }}
                 .text-layer > span {{
@@ -198,14 +198,11 @@ class LocalPDFJSViewer:
                     white-space: pre;
                     cursor: text;
                     transform-origin: 0% 0%;
+                    font-family: sans-serif;
                 }}
-                .text-layer .highlight {{
-                    background-color: yellow !important;
-                    color: black !important;
-                }}
+
                 .text-layer ::selection {{
-                    background: #1E90FF;
-                    color: white;
+                    background: rgba(0, 0, 255, 0.3);
                 }}
             </style>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -235,7 +232,7 @@ class LocalPDFJSViewer:
                 let currentPage = 1;
                 let scale = 1.0;
                 let searchResults = [];
-                let currentSearchIndex = -1;
+
                 
                 // Initialize PDF.js
                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -295,12 +292,19 @@ class LocalPDFJSViewer:
                             textLayerDiv.style.width = viewport.width + 'px';
                             textLayerDiv.style.height = viewport.height + 'px';
                             
-                            // Render text layer
+                            // Render text layer with scaled viewport
                             pdfjsLib.renderTextLayer({{
                                 textContent: textContent,
                                 container: textLayerDiv,
                                 viewport: viewport,
                                 textDivs: []
+                            }}).promise.then(() => {{
+                                // Scale text elements to match zoom
+                                const textElements = textLayerDiv.querySelectorAll('span');
+                                textElements.forEach(span => {{
+                                    const fontSize = parseFloat(span.style.fontSize) || 12;
+                                    span.style.fontSize = (fontSize * scale * 1.4) + 'px';
+                                }});
                             }});
                             
                             pageDiv.appendChild(canvas);
@@ -360,7 +364,6 @@ class LocalPDFJSViewer:
                         }});
                         
                         if (searchResults.length > 0) {{
-                            currentSearchIndex = 0;
                             searchResults[0].scrollIntoView({{behavior: 'smooth', block: 'center'}});
                         }}
                     }}, 500);
@@ -373,7 +376,6 @@ class LocalPDFJSViewer:
                         el.style.fontWeight = '';
                     }});
                     searchResults = [];
-                    currentSearchIndex = -1;
                 }}
                 
                 // Search on Enter key
@@ -388,7 +390,7 @@ class LocalPDFJSViewer:
         """
         
         web_view.setHtml(html)
-        print("✅ Local PDF.js viewer loaded with full functionality")
+        print("✅ PDF.js viewer loaded with full functionality")
     
     def show_error(self, web_view: QWebEngineView, pdf_url: str, error: str):
         """Show error message"""

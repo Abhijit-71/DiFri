@@ -85,17 +85,7 @@ class MainWindow(QMainWindow):
         
         self.setCentralWidget(central)
     
-    """def resizeEvent(self,event):
-        super().resizeEvent(event)
-
-        # Check if window is maximized
-        if self.windowState() & Qt.WindowState.WindowMaximized:
-            if not self.was_maximized:
-                self.was_maximized = True
-                print(self.TabBar.width())
-                self.TabBar.TabBar.tabBar().setFixedWidth(200)  # call your function
-        else:
-            self.was_maximized = False""" #calling resize event to adjust width 
+    # Resize event removed - was for adjusting tab width on maximize 
 
 class PaddedWindow(QWidget):
     def __init__(self, widget, color):

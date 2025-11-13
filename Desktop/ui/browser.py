@@ -2,10 +2,9 @@ from PyQt6.QtWidgets import QWidget , QVBoxLayout
 from .toolbar import Toolbar , Navigation , URLTab
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
-from PyQt6.QtWebEngineCore import QWebEnginePage
 from .coreui import ProgressBar
 from browser.new_filter import FilterPage
-from browser.local_pdfjs_viewer import LocalPDFJSViewer
+from browser.pdfjs_viewer import PDFJSViewer
 import os
 
 
@@ -24,15 +23,15 @@ class BrowserWindow(QWidget):
         self.browser = QWebEngineView()
         self.filtered_page = FilterPage(self._profile, self.browser)
         self.browser.setPage(self.filtered_page)
-        self.pdf_handler = LocalPDFJSViewer()
-        # intercept downloads (PDF links often trigger a download) and open viewer instead
+        self.pdf_handler = PDFJSViewer()
+        # Intercept downloads (PDF links often trigger a download) and open viewer instead
         try:
             profile = self.browser.page().profile()
             profile.downloadRequested.connect(self.on_download_requested)
         except Exception:
             pass
-        html_path = os.path.join(os.getcwd(),"ui/index.html") # gets location for html file
-        file_url = QUrl.fromLocalFile(html_path) # converts loaction to url
+        html_path = os.path.join(os.getcwd(),"ui/index.html") # Gets location for HTML file
+        file_url = QUrl.fromLocalFile(html_path) # Converts location to URL
         self.browser.setUrl(file_url)
 
 
@@ -72,13 +71,13 @@ class BrowserWindow(QWidget):
             url = ''
             mime = ''
 
-        # if it's a PDF - show in viewer instead of downloading
+        # If it's a PDF - show in viewer instead of downloading
         if (mime and 'pdf' in mime.lower()) or url.lower().endswith('.pdf'):
-            print(f"[PDF] מציג PDF במקום הורדה: {url}")
-            download.cancel()  # ביטול ההורדה
-            self.pdf_handler.show_pdf(self.browser, url)  # הצגה בדפדפן
+            print(f"[PDF] Displaying PDF instead of download: {url}")
+            download.cancel()  # Cancel the download
+            self.pdf_handler.show_pdf(self.browser, url)  # Display in browser
         else:
-            # allow other downloads to proceed (default behavior)
+            # Allow other downloads to proceed (default behavior)
             try:
                 download.accept()
             except Exception:

@@ -15,8 +15,8 @@ class Browser:
     def configure(self):
 
 
-        """why this works ?? ==> Earlier , profile was instanciated many times creating multiple profiles , now only one profile 
-         same name does not mean one profile . May also create many instaces of a profile"""
+        # Why this works: Earlier, profile was instantiated many times creating multiple profiles.
+        # Now only one profile. Same name does not mean one profile - may create many instances.
         
 
         profile_path = os.path.join(os.getcwd(),"user_data")
@@ -32,7 +32,7 @@ class Browser:
             )
         
         
-        # download is also connected once , for no repeated signal 
+        # Download is also connected once, for no repeated signal 
 
         if self._download_handler_connected == False:
             self.profile.downloadRequested.connect(self.download_req) #type:ignore

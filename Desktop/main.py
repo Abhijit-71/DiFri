@@ -8,19 +8,7 @@ from ui.tabbar import TabManager
 from ui.browser import BrowserWindow
 
 
-"""app = QApplication(sys.argv)
-browser = QWebEngineView()
-browser.setUrl(QUrl('https://google.com'))
 
-tools = Navigation(browser)
-navbar = Toolbar(tools)
-boom = PaddedWindow(browser,navbar)
-window = MainWindow(boom)
-
-
-
-window.show()
-app.exec()"""
 
 dns_config = [
     '--enable-features=DnsOverHttps',
