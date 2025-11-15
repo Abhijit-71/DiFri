@@ -10,7 +10,7 @@ app = QApplication(sys.argv)
 
 
 tab_manager = TabManager()
-CentralWidget = PaddedWindow(tab_manager,"#181826")
+CentralWidget = PaddedWindow(tab_manager.content_stack,"#1e1e1e")
 
 # Create main window with custom title bar
 window = MainWindow(CentralWidget,tab_manager)

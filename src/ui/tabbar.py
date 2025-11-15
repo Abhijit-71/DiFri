@@ -1,35 +1,33 @@
-from PyQt6.QtWidgets import (QWidget, QTabWidget,QVBoxLayout, QHBoxLayout, QTabBar, QLabel)
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, 
+                             QTabBar, QLabel, QStackedWidget)
 from PyQt6.QtGui import QIcon
 from .browser import BrowserWindow
 from browser.corebrowser import Browser
-from .dropdown import DownloadTab , DownloadManager
+from .dropdown import DownloadTab, DownloadManager
 from core.utils import resource_path
+
 
 class TabManager(QWidget):
     def __init__(self):
         super().__init__()
         
-        self.index = 1 #index for tabs
+        self.index = 1
         
         self.download_manager = DownloadManager()
         self.download_tab = DownloadTab(self.download_manager)
-        self.browser_instance = Browser(self.download_manager)  #called once for only one profile for each startup 
+        self.browser_instance = Browser(self.download_manager)
 
-        layout = QVBoxLayout()
-        layout.setContentsMargins(0,0,0,0)
-        layout.setSpacing(10)
+        # Main layout
+        main_layout = QVBoxLayout()
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        main_layout.setSpacing(0)
 
-        # Tab manager full 
-        self.TabBar = QTabWidget()
-        self.TabBar.setTabsClosable(True)
-        self.TabBar.setMovable(True)
-        self.TabBar.setDocumentMode(True)
-        self.TabBar.setContentsMargins(0,0,0,0)
-        self.TabBar.setStyleSheet("""
-            QTabWidget::pane {
-                border: none;
-                background: transparent;    
-            }
+        # Create separate tab bar (without QTabWidget)
+        self.tab_bar = QTabBar()
+        self.tab_bar.setTabsClosable(True)
+        self.tab_bar.setMovable(True)
+        self.tab_bar.setDocumentMode(True)
+        self.tab_bar.setStyleSheet("""
             QTabBar {
                 background: transparent;
             }
@@ -38,12 +36,11 @@ class TabManager(QWidget):
                 color: #ffffff;
                 padding: 6px 10px 6px 30px;
                 margin-right: 4px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                width: 150px;
+                border-radius: 8px;
+                width: 100px;
             }
             QTabBar::tab:selected {
-                background:#47327D;
+                background:#3a2570;
             }
             QTabBar::tab:hover {
                 border:1px solid #b4aaff;
@@ -51,10 +48,10 @@ class TabManager(QWidget):
             QTabBar::tab:selected:hover {
                 border:1px solid #d6c8ff;
             }
-            
         """)
+        
         close_icon = resource_path("svg/cross.svg").replace("\\", "/")
-        self.TabBar.setStyleSheet(self.TabBar.styleSheet()+f"""
+        self.tab_bar.setStyleSheet(self.tab_bar.styleSheet() + f"""
             QTabBar::close-button {{
                 image: url({close_icon});
                 subcontrol-position: right;
@@ -63,121 +60,126 @@ class TabManager(QWidget):
             }}
         """)
 
-        self.TabBar.tabBar().setMinimumWidth(200)# type: ignore 
-        self.TabBar.tabBar().setMaximumWidth(1920)#type:ignore
-        
-        # for the tab changers button
-        self.container = QWidget(self.TabBar.tabBar())
-        h_layout = QHBoxLayout(self.container)
-        h_layout.setContentsMargins(0,0,0,0)
-        h_layout.addStretch() 
-        self.container.setLayout(h_layout)
-        self.container.show()
-        self.container.move(self.TabBar.tabBar().width() - self.container.width(), 0) #type:ignore
+        self.tab_bar.setMinimumWidth(100)
+        self.tab_bar.setMaximumWidth(1920)
+        self.tab_bar.setUsesScrollButtons(False)
 
-        layout.addWidget(self.TabBar)
+        # tab content
+        self.content_stack = QStackedWidget()
+        self.content_stack.setStyleSheet("""
+            QStackedWidget {
+                background: transparent;
+            }
+        """)
+
+        # Add tab bar to its own layout
+        main_layout.addWidget(self.content_stack)
         
-        self.setLayout(layout)
-         
+        self.setLayout(main_layout)
         
-        # main browserwindow incl. toolbar
-        self.browser_window = BrowserWindow(self.browser_instance,self) #passed profile (which was created once)
-        self.browser_window.toolbar.home.clicked.connect(self.add_tab)
+        #first browser window
+        self.browser_window = BrowserWindow(self.browser_instance)
         self.browser_window.toolbar.download.clicked.connect(self.add_download_tab)
-        self.TabBar.addTab(self.browser_window,"New Tab")
-
-        self.browser_window.browser.titleChanged.connect(lambda title:self.update_title_icon(self.browser_window,title))
-        self.browser_window.browser.iconChanged.connect(lambda icon:self.update_title_icon(self.browser_window,icon))
         
-        self.TabBar.tabCloseRequested.connect(self.close_tab)
+        # Add first tab
+        self.tab_bar.addTab("New Tab")
+        self.content_stack.addWidget(self.browser_window)
+        
+        self.browser_window.browser.titleChanged.connect(
+            lambda title: self.update_title_icon(self.browser_window, title=title)
+        )
+        self.browser_window.browser.iconChanged.connect(
+            lambda icon: self.update_title_icon(self.browser_window, icon=icon)
+        )
+        
+        # Connect signals
+        self.tab_bar.currentChanged.connect(self.content_stack.setCurrentIndex)
+        self.tab_bar.tabCloseRequested.connect(self.close_tab)
         
         
-    def add_tab(self,url=None):
-            tab_content = BrowserWindow(self.browser_instance,self) #passed profile (which was created once)
-            tab_content.toolbar.home.clicked.connect(self.add_tab)
-            tab_content.toolbar.download.clicked.connect(self.add_download_tab)
+        
+    def add_tab(self, url=None):
+        tab_content = BrowserWindow(self.browser_instance)
+        tab_content.toolbar.download.clicked.connect(self.add_download_tab)
 
-            index = self.TabBar.addTab(tab_content, f"")
-            
-            self.TabBar.setCurrentIndex(index)
-            self.index += 1 
-            
-            tab_content.browser.titleChanged.connect(lambda title:self.update_title_icon(tab_content,title))
-            tab_content.browser.iconChanged.connect(lambda icon:self.update_title_icon(tab_content,icon))
+        index = self.tab_bar.addTab("")
+        self.content_stack.addWidget(tab_content)
+        
+        self.tab_bar.setCurrentIndex(index)
+        self.index += 1
+        
+        tab_content.browser.titleChanged.connect(
+            lambda title: self.update_title_icon(tab_content, title=title)
+        )
+        tab_content.browser.iconChanged.connect(
+            lambda icon: self.update_title_icon(tab_content, icon=icon)
+        )
 
-            if url:
-                 from PyQt6.QtCore import QUrl
-                 tab_content.browser.setUrl(QUrl(url))
-                 
+        if url:
+            from PyQt6.QtCore import QUrl
+            tab_content.browser.setUrl(QUrl(url))
             
-            return tab_content
-             
+        return tab_content
+    
+    
     
     def add_download_tab(self):
-         tab_content = self.download_tab
-         index = self.TabBar.addTab(tab_content, "Downloads")
-         self.TabBar.setCurrentIndex(index)
-         self.index += 1 
+        tab_content = self.download_tab
+        index = self.tab_bar.addTab("Downloads")
+        self.content_stack.addWidget(tab_content)
+        self.tab_bar.setCurrentIndex(index)
+        self.index += 1
+
 
 
     def close_tab(self, index):
-        widget = self.TabBar.widget(index)
-        if self.TabBar.count() <= 1:
+        if self.tab_bar.count() <= 1:
             return
-        self.TabBar.removeTab(index)
+            
+        widget = self.content_stack.widget(index)
+        self.tab_bar.removeTab(index)
+        self.content_stack.removeWidget(widget)
         
-        if widget and widget != self.download_tab :
+        if widget and widget != self.download_tab:
             widget.deleteLater()
 
 
 
-    def update_title_icon(self,browser_window:BrowserWindow,icon=None,title=None):
-         
-         if icon is None:
-              icon = browser_window.browser.icon()
+    def update_title_icon(self, browser_window: BrowserWindow, icon=None, title=None):
+        if icon is None:
+            icon = browser_window.browser.icon()
         
-         if title is None:
-              title = browser_window.browser.title()
+        if title is None:
+            title = browser_window.browser.title()
 
-         for i in range(self.TabBar.count()):
-              if self.TabBar.widget(i) == browser_window:
-                   self.TabBar.tabBar().setTabButton(i, QTabBar.ButtonPosition.LeftSide, IconTextWidget(icon,title,100)) #type:ignore
-         
-        
+        for i in range(self.content_stack.count()):
+            if self.content_stack.widget(i) == browser_window:
+                self.tab_bar.setTabButton(
+                    i, 
+                    QTabBar.ButtonPosition.LeftSide, 
+                    IconTextWidget(icon, title)
+                )
+
+
+
 
 class IconTextWidget(QWidget):
-    def __init__(self, icon, text, max_text_width=100):
+    def __init__(self, icon, text, max_text_width=80):
         super().__init__()
         layout = QHBoxLayout(self)
         layout.setContentsMargins(10, 0, 0, 0)
         layout.setSpacing(6)
 
         icon_label = QLabel()
-        pixmap = QIcon(icon).pixmap(14,14)
+        pixmap = QIcon(icon).pixmap(14, 14)
         icon_label.setPixmap(pixmap)
         icon_label.setFixedSize(18, 18)
 
         text_label = QLabel(text)
         text_label.setFixedWidth(max_text_width)
-        """text_label.setStyleSheet(
-    QLabel {
-        color: white;
-        font-size: 12px;
-        background: qlineargradient(
-            x1:0, y1:0, x2:1, y2:0,
-            stop:0 rgba(71, 50, 125, 0),
-            stop:0.6 rgba(71, 50, 125, 40),
-            stop:0.7 rgba(64, 45, 114, 100),
-            stop:0.85 rgba(64, 45, 112, 200),
-            stop:1 rgba(71, 50, 125, 255)
-        );
-        border-radius:0px
-    }
-)"""     # was for faded , text in title of tabs did not work
 
         layout.addWidget(icon_label)
         layout.addWidget(text_label)
         layout.addStretch()
         self.setStyleSheet("background-color: transparent;")
         self.setLayout(layout)
-

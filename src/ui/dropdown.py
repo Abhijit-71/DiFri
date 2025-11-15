@@ -263,34 +263,30 @@ class MenuDrop(QMenu):
 
         #do include resource_path if icons required
 
-        add_tab = QAction(QIcon(("svg/home_tab.svg")),"Add New Tab",self)
-        #add_tab.setStatusTip("Add New Tab")
+        add_tab = QAction("Add New Tab",self)
         add_tab.setShortcut('Ctrl+T')
         self.addAction(add_tab)
 
         self.addSeparator()
 
-        self.addAction(QIcon("svg/logo.svg"),"BookMark")
-        self.addAction(QIcon("svg/logo.svg"),"History")
+        self.addAction("BookMark")
+        self.addAction("History")
         self.addSeparator()
         
-        print = QAction(QIcon(("svg/home_tab.svg")),"Print",self)
-        #print.setStatusTip("Print this page")
+        print = QAction("Print",self)
         print.setShortcut('Ctrl+P')
         self.addAction(print)
 
-        save = QAction(QIcon(("svg/home_tab.svg")),"Save Page As",self)
-        #save.setStatusTip("Save this page")
+        save = QAction("Save Page As      ",self)
         save.setShortcut('Ctrl+S')
         self.addAction(save)
         self.addSeparator()
 
-        self.addAction(QIcon("svg/logo.svg"),"Settings")
-        self.addAction(QIcon("svg/logo.svg"),"Help")
+        self.addAction("Settings")
+        self.addAction("Help")
         self.addSeparator()
         
-        exit = QAction(QIcon(("svg/home_tab.svg")),"Exit",self)
-        #exit.setStatusTip("Add New Tab")
+        exit = QAction("Exit",self)
         exit.setShortcut('Alt+F4')
         self.addAction(exit)
 
