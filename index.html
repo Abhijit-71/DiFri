@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiFri Browser - Distraction-Free Browsing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: float 20s linear infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 20px;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: #fff;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            background: #f0f0f0;
+        }
+
+        .version {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Demo Section */
+        .demo {
+            padding: 100px 0;
+            background: rgba(0,0,0,0.25);
+        }
+
+        .demo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .demo-item {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .demo-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .demo-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 15px;
+        }
+
+        .demo-gif {
+            grid-column: 1 / -1;
+            max-width: 900px;
+            margin: 50px auto 0;
+        }
+
+        .demo-gif img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 0;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+
+        .tech-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        /* Future Plans Section */
+        .future {
+            padding: 100px 0;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-item {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #fff;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(10px);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .timeline-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-item p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+        }
+
+        .contributors {
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="logo">
+                    <img src="https://github.com/Abhijit-71/DiFri/raw/master/Desktop/svg/dbrowser_logo.svg" alt="DiFri Browser Logo" onerror="this.parentElement.innerHTML='🌐'">
+                </div>
+                <h1>DiFri Browser</h1>
+                <p class="tagline">Your distraction-free companion for focused, productive browsing with built-in content filtering</p>
+                <a href="https://github.com/Abhijit-71/DiFri/releases/tag/DiFri" class="download-btn" target="_blank">
+                    Download for Windows
+                </a>
+                <p class="version">v1.0.0 | Free & Open Source</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🚫</div>
+                    <h3>Content Filtering</h3>
+                    <p>Built-in DNS-level filtering blocks inappropriate content automatically. Safe for kids, schools, and focused work environments.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📑</div>
+                    <h3>Multiple Tabs</h3>
+                    <p>Full tab management with drag-to-reorder, close buttons, and dynamic tab titles with favicons. Browse multiple sites effortlessly.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📄</div>
+                    <h3>Advanced PDF Viewer</h3>
+                    <p>PDF.js integration with text selection, copying, search functionality, and smooth zoom (25%-300%). View PDFs directly in the browser.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⬇️</div>
+                    <h3>Download Manager</h3>
+                    <p>Complete download system with progress tracking, pause/resume capabilities, and download history. Full control over your downloads.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Modern Dark UI</h3>
+                    <p>Beautiful dark theme with custom styling, dropdown menus, and context menus. Easy on the eyes for extended browsing sessions.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>Privacy Focused</h3>
+                    <p>Chromium-based engine with webapp isolation. Your browsing stays private and secure with minimal tracking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section class="demo">
+        <div class="container">
+            <h2 class="section-title">See DiFri in Action</h2>
+            <div class="demo-gallery">
+                <div class="demo-item">
+                    <img src="https://github.com/Abhijit-71/DiFri/raw/master/Demo/img-1.png" alt="DiFri Browser Screenshot 1" loading="lazy">
+                </div>
+                <div class="demo-item">
+                    <img src="https://github.com/Abhijit-71/DiFri/raw/master/Demo/img-2.png" alt="DiFri Browser Screenshot 2" loading="lazy">
+                </div>
+                <div class="demo-item">
+                    <img src="https://github.com/Abhijit-71/DiFri/raw/master/Demo/img-3.png" alt="DiFri Browser Screenshot 3" loading="lazy">
+                </div>
+            </div>
+            <div class="demo-gif">
+                <img src="https://github.com/Abhijit-71/DiFri/raw/master/Demo/demo-gif.gif" alt="DiFri Browser Demo" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about">
+        <div class="container">
+            <h2 class="section-title">About DiFri</h2>
+            <div class="about-content">
+                <p>DiFri is an open-source distraction-free browser built with Python, PyQt6, and QWebEngineView. It integrates DNS-level filtering and webapp isolation, designed to replace native browsers while promoting productivity.</p>
+                
+                <p>The browser is lightweight, cross-platform (Windows, macOS, Linux), and easy to extend with additional PyQt6 widgets or custom styling. Perfect for educational institutions, families, or anyone seeking a cleaner browsing experience.</p>
+
+                <p>Initialized using <strong>uv</strong> for modern Python package management, DiFri opens the DiFri HomePage by default and includes intuitive navigation controls.</p>
+
+                <div class="tech-stack">
+                    <span class="tech-badge">Python 3.8-3.12</span>
+                    <span class="tech-badge">PyQt6</span>
+                    <span class="tech-badge">QWebEngineView</span>
+                    <span class="tech-badge">PDF.js</span>
+                    <span class="tech-badge">UV Package Manager</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Plans Section -->
+    <section class="future">
+        <div class="container">
+            <h2 class="section-title">Future Plans</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>🔐 Enhanced Cookie Management</h3>
+                    <p>Complete cookie control system with granular permissions, automatic cleanup, and privacy-focused cookie policies for better security.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>📱 Android Version Development</h3>
+                    <p>Android branch is currently paused but planned for future development. Cross-platform mobile support coming soon.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>🧩 Extension Support</h3>
+                    <p>Native extension system allowing users to add custom functionality while maintaining the distraction-free philosophy.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>☁️ Sync Capabilities</h3>
+                    <p>Bookmark and settings synchronization across devices for seamless browsing experience everywhere.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>🎯 Advanced Filtering Options</h3>
+                    <p>Customizable filtering rules, whitelist/blacklist management, and time-based restrictions for ultimate focus control.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h3>🌍 Multi-language Support</h3>
+                    <p>Localization for multiple languages to make DiFri accessible to users worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="https://github.com/Abhijit-71/DiFri" target="_blank">GitHub Repository</a>
+                <a href="https://github.com/Abhijit-71/DiFri/issues" target="_blank">Report Issues</a>
+                <a href="https://github.com/Abhijit-71/DiFri/blob/master/LICENSE.txt" target="_blank">MIT License</a>
+            </div>
+            <div class="contributors">
+                <p>Created and maintained by <strong>Abhijit-71</strong></p>
+                <p>Contributors: Abhijit Dolai, Riki-Hershowitz</p>
+            </div>
+            <p style="margin-top: 30px; opacity: 0.6;">© 2025 DiFri Browser - Open Source Project</p>
+        </div>
+    </footer>
+</body>
+</html>
