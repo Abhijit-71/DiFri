@@ -1,7 +1,8 @@
-from PyQt6.QtWebEngineCore import QWebEngineProfile , QWebEngineDownloadRequest 
+from PyQt6.QtWebEngineCore import QWebEngineProfile , QWebEngineDownloadRequest , QWebEngineSettings
 from PyQt6.QtWidgets import QFileDialog
 from ui.dropdown import DownloadManager
 import os
+
 
 class Browser:
 
@@ -30,6 +31,20 @@ class Browser:
         self.profile.setPersistentCookiesPolicy(
             QWebEngineProfile.PersistentCookiesPolicy.AllowPersistentCookies
             )
+        
+        settings = self.profile.settings()
+        settings.setAttribute(QWebEngineSettings.WebAttribute.FullScreenSupportEnabled,True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalStorageEnabled, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptEnabled, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.PluginsEnabled, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanAccessClipboard, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.JavascriptCanPaste, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.PdfViewerEnabled, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessFileUrls, True)
+        settings.setAttribute(QWebEngineSettings.WebAttribute.LocalContentCanAccessRemoteUrls, True)
+        #settings.setAttribute(QWebEngineSettings.WebAttribute.ForceDarkMode, True) === forcing makes colors obselete
         
         
         # download is also connected once , for no repeated signal 
@@ -60,3 +75,6 @@ class Browser:
             download.cancel()
     
 
+    
+
+    

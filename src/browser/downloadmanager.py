@@ -42,7 +42,7 @@ class DownloadRouter:
         if is_pdf:
             print(f"[Router] PDF download intercepted: {url}")
             # Find which browser tab initiated this
-            try:
+            """try:
                 page = download.page()
                 if page:
                     page_id = id(page)
@@ -58,7 +58,7 @@ class DownloadRouter:
                 else:
                     print(f"[Router] Download has no associated page")
             except Exception as e:
-                print(f"[Router] Error routing PDF: {e}")
+                print(f"[Router] Error routing PDF: {e}")"""
         else:
             # Allow non-PDF downloads
             try:

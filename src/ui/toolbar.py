@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt,QUrl
 from .coreui import HoverButton
 from PyQt6.QtGui import  QPixmap
 from urllib.parse import quote_plus
-from .dropdown import MenuDrop
+from .dropdown import MenuDrop , DownloadMenu
 from core.utils import resource_path
 
 
@@ -82,7 +82,7 @@ class URLTab(QWidget):
 
     def change_src(self,src:str):
         if '.' in src and ' ' not in src:
-            if src.startswith('https://') or src.startswith('http://'):
+            if src.startswith('https://') or src.startswith('http://') or src.startswith('file:///'):
                 self.browser.setUrl(QUrl(src))
             else:
                 self.browser.setUrl(QUrl('https://'+src))
@@ -106,6 +106,9 @@ class Toolbar(QWidget):
         self.menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 
         self.download = HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
+        self.download.setMenu(DownloadMenu())
+        self.download.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+        
          
         menu_layout = QHBoxLayout()
         menu_layout.setContentsMargins(20,0,0,0)

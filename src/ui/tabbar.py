@@ -79,7 +79,7 @@ class TabManager(QWidget):
         
         #first browser window
         self.browser_window = BrowserWindow(self.browser_instance)
-        self.browser_window.toolbar.download.clicked.connect(self.add_download_tab)
+        #self.browser_window.toolbar.download.clicked.connect(self.add_download_tab)
         
         # Add first tab
         self.tab_bar.addTab("New Tab")
@@ -100,7 +100,7 @@ class TabManager(QWidget):
         
     def add_tab(self, url=None):
         tab_content = BrowserWindow(self.browser_instance)
-        tab_content.toolbar.download.clicked.connect(self.add_download_tab)
+        #tab_content.toolbar.download.clicked.connect(self.add_download_tab)
 
         index = self.tab_bar.addTab("")
         self.content_stack.addWidget(tab_content)

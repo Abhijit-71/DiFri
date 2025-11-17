@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import (QMenu , QWidget , QVBoxLayout, QLabel , QHBoxLayout, QPushButton, 
+from PyQt6.QtWidgets import (QMenu , QWidget,QWidgetAction , QVBoxLayout, QLabel , QHBoxLayout, QPushButton, 
     QListWidget, QListWidgetItem, QTableWidget, 
     QTableWidgetItem, QHeaderView,QProgressBar)
 
@@ -256,6 +256,53 @@ class DownloadManager(QWidget):
 
 #https://www.thinkbroadband.com/download   === test url
 
+class DownloadBar(QWidget):
+    def __init__(self):
+        super().__init__()
+        #self.download = download
+
+        # ----- UI ELEMENTS -----
+        self.name_label = QLabel("download")
+        #self.url_button = QPushButton("Source")
+        self.size_label = QLabel("Unknown size | ")
+        self.progress = QProgressBar()
+        self.progress.setValue(20)
+
+        self.cancel_btn = QPushButton("✕")
+        self.cancel_btn.setFixedWidth(30)
+        self.pause_btn = QPushButton("+")
+        self.pause_btn.setFixedWidth(30)
+
+        # ----- LAYOUT -----
+        top = QHBoxLayout()
+        top.addWidget(self.name_label)
+        top.addWidget(self.pause_btn)
+        top.addWidget(self.cancel_btn)
+
+        mid = QHBoxLayout()
+        #mid.addWidget(self.url_button)
+        mid.addWidget(self.size_label)
+        mid.addWidget(self.progress)
+
+        vbox = QVBoxLayout(self)
+        vbox.addLayout(top)
+        vbox.addLayout(mid)
+        
+
+        self.setLayout(vbox)
+
+
+class DownloadMenu(QMenu):
+    def __init__(self):
+        super().__init__()
+        self.setMinimumWidth(200)
+        item = DownloadBar()
+        action = QWidgetAction(self)
+        action.setDefaultWidget(item)
+        self.addAction(action)
+        self.addSeparator()
+        self.addAction(action)
+        
 
 class MenuDrop(QMenu):
     def __init__(self):

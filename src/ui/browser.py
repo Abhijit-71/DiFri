@@ -4,10 +4,9 @@ from PyQt6.QtCore import QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from .coreui import ProgressBar
 from browser.new_filter import FilterPage
-from browser.pdfjs_viewer import PDFJSViewer
 from browser.downloadmanager import DownloadRouter
+from PyQt6.QtWebEngineCore import QWebEnginePage
 import os
-
 
 class BrowserWindow(QWidget):
     
@@ -23,7 +22,9 @@ class BrowserWindow(QWidget):
         self.browser = QWebEngineView(self)
         self.filtered_page = FilterPage(self._profile, self.browser)
         self.browser.setPage(self.filtered_page)
-        self.pdf_handler = PDFJSViewer()
+        self.filtered_page.fullScreenRequested.connect(self.handle_fullscreen)
+        self.filtered_page.featurePermissionRequested.connect(self.handle_permission)
+        #self.pdf_handler = PDFJSViewer()
         
         
         # Register this browser with the router
@@ -67,12 +68,20 @@ class BrowserWindow(QWidget):
         url_string = url.toString()
         self.urlbar.urlbox.setText(url_string)
         
-        # Check a direct PDF URL navigation
-        if url_string.lower().endswith('.pdf') and not url_string.startswith('data:'):
-            print(f"[Browser] Direct PDF navigation: {url_string}")
-            self.pdf_handler.show_pdf(self.browser, url_string)
             
+    def handle_fullscreen(self, request):
+        if request.toggleOn():
+            self.showFullScreen()
+        else:
+            self.showNormal()
+        request.accept()
     
+    def handle_permission(self, url, feature, callback):
+        if feature == QWebEnginePage.Feature.Clipboard:
+            callback(True)
+        else:
+            callback(True)
+        
     def closeEvent(self, event):
         """Clean up when tab is closed"""
         router = DownloadRouter()
