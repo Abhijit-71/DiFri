@@ -1,46 +1,35 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout , QFileDialog
 from .toolbar import Toolbar, Navigation, URLTab
 from PyQt6.QtCore import QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from .coreui import ProgressBar
 from browser.new_filter import FilterPage
-from browser.downloadmanager import DownloadRouter
 from PyQt6.QtWebEngineCore import QWebEnginePage
 import os
+
 
 class BrowserWindow(QWidget):
     
     _profile = None  # works as cache
-    _download_connected = False  # Track if download handler is connected
 
-    def __init__(self, browser_instance):
+    def __init__(self, browser_instance,tabmanager):
         super().__init__()
 
         if self._profile is None:
             self._profile = browser_instance.profile
         
+        self.tab_manager = tabmanager
         self.browser = QWebEngineView(self)
         self.filtered_page = FilterPage(self._profile, self.browser)
         self.browser.setPage(self.filtered_page)
+        
+        if browser_instance._download_handler_connected == False: #from Browser class var.
+            self.filtered_page.profile().downloadRequested.connect(self.handle_downloads) #type:ignore
+            browser_instance._download_handler_connected = True
+        
         self.filtered_page.fullScreenRequested.connect(self.handle_fullscreen)
         self.filtered_page.featurePermissionRequested.connect(self.handle_permission)
-        #self.pdf_handler = PDFJSViewer()
-        
-        
-        # Register this browser with the router
-        router = DownloadRouter()
-        router.register_browser(self)
-        # Connect download handler ONCE globally
-        if not BrowserWindow._download_connected:
-            try:
-                profile = self.browser.page().profile() #type:ignore
-                profile.downloadRequested.connect(router.handle_download) #type:ignore
-                BrowserWindow._download_connected = True
-                #print("[Browser] Download router connected")
-            except Exception as e:
-                print(f"[Browser] Error connecting downloads: {e}")
-        
-        
+        self.browser.createWindow = self.create_window #type:ignore
         
         html_path = os.path.join(os.getcwd(), "ui/index.html")
         file_url = QUrl.fromLocalFile(html_path)
@@ -53,7 +42,7 @@ class BrowserWindow(QWidget):
 
         navbar = Navigation(self.browser)
         self.urlbar = URLTab(self.browser)
-        self.toolbar = Toolbar(navbar, self.urlbar)
+        self.toolbar = Toolbar(navbar, self.urlbar,self.tab_manager.download_menu)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
@@ -64,10 +53,30 @@ class BrowserWindow(QWidget):
 
         self.browser.urlChanged.connect(self.update_urlbox)
 
+
     def update_urlbox(self, url):
         url_string = url.toString()
         self.urlbar.urlbox.setText(url_string)
-        
+
+       
+    def handle_downloads(self,download):
+        suggested_name = download.downloadFileName()
+
+        path,_ = QFileDialog.getSaveFileName(
+            None,
+            "DiFri Download Manager",
+            suggested_name,
+        )
+
+        if path:
+            download.setDownloadFileName(os.path.basename(path))
+            download.setDownloadDirectory(os.path.dirname(path))
+            download.accept()
+            self.tab_manager.download_menu.add_download(download)
+            self.toolbar.downloadbtn.showMenu()
+        else:
+            download.cancel()
+   
             
     def handle_fullscreen(self, request):
         if request.toggleOn():
@@ -76,14 +85,16 @@ class BrowserWindow(QWidget):
             self.showNormal()
         request.accept()
     
+    
     def handle_permission(self, url, feature, callback):
-        if feature == QWebEnginePage.Feature.Clipboard:
+        if feature == QWebEnginePage.Feature.Clipboard: #type:ignore
             callback(True)
         else:
             callback(True)
+      
         
-    def closeEvent(self, event):
-        """Clean up when tab is closed"""
-        router = DownloadRouter()
-        router.unregister_browser(self)
-        super().closeEvent(event)
+    def create_window(self, window_type):
+        new_tab = self.tab_manager.add_tab() if self.tab_manager else None
+        return new_tab.browser if new_tab else None
+    
+  

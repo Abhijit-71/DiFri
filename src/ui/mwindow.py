@@ -45,12 +45,12 @@ class CustomTitleBar(QWidget):
         self.close_btn = HoverButton('svg/close-normal.svg','svg/close-hover.svg','svg/close-pressed.svg',16)
         self.close_btn.setStyleSheet("background: transparent; border: none;")
         self.close_btn.clicked.connect(self.parent.close) # type: ignore
-        buttons_layout.addWidget(self.close_btn)
-        
+        buttons_layout.addWidget(self.close_btn)   
         layout.addLayout(buttons_layout)
 
         # Dragging
         self.start = QPoint(0, 0)
+
 
     def toggle_max_restore(self):
         if self.parent.isMaximized(): # type: ignore
@@ -78,7 +78,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(resource_path('svg/dbrowser_logo.svg')))
         self.setWindowFlags(Qt.WindowType.CustomizeWindowHint)
         self.setMinimumSize(800, 600)
-
+        
         self.TabBar = tab_manager
         
         central = QWidget()
@@ -89,8 +89,8 @@ class MainWindow(QMainWindow):
         self.titlebar = CustomTitleBar(self.TabBar,self)
         layout.addWidget(self.titlebar)
         layout.addWidget(widget)
-        
         self.setCentralWidget(central)
+
 
 
 class PaddedWindow(QWidget):
@@ -101,7 +101,6 @@ class PaddedWindow(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 0, 8, 8)
         layout.setSpacing(0)
-
         layout.addWidget(widget)
         
         

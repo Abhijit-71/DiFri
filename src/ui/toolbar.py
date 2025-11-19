@@ -4,7 +4,7 @@ from PyQt6.QtCore import Qt,QUrl
 from .coreui import HoverButton
 from PyQt6.QtGui import  QPixmap
 from urllib.parse import quote_plus
-from .dropdown import MenuDrop , DownloadMenu
+from .dropdown import MenuDrop
 from core.utils import resource_path
 
 
@@ -95,25 +95,23 @@ class URLTab(QWidget):
 
 
 
+
 class Toolbar(QWidget):
-    def __init__(self, navbar, urltab, color="#3a2570"):
+    def __init__(self, navbar, urltab,downnload_man,color="#3a2570"):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
-        
         self.menu = HoverButton('svg/menu.svg','svg/menu_pressed.svg','svg/menu_pressed.svg', 24)
         self.menu.setMenu(MenuDrop()) #menu added
         self.menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 
-        self.download = HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
-        self.download.setMenu(DownloadMenu())
-        self.download.setStyleSheet("QPushButton::menu-indicator { image: none; }")
-        
-         
         menu_layout = QHBoxLayout()
         menu_layout.setContentsMargins(20,0,0,0)
         menu_layout.setSpacing(30)
-        menu_layout.addWidget(self.download)
+        self.downloadbtn =HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
+        self.downloadbtn.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+        self.downloadbtn.setMenu(downnload_man)
+        menu_layout.addWidget(self.downloadbtn)
         menu_layout.addWidget(self.menu)
         
         url_layout = QHBoxLayout()
@@ -122,16 +120,13 @@ class Toolbar(QWidget):
         url_layout.addWidget(navbar)
         url_layout.addWidget(urltab)
 
-
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20,0,20,0)
         layout.setSpacing(30)
         
-        
         layout.addLayout(url_layout)
         layout.addLayout(menu_layout)
         
-        
-        self.setStyleSheet(f"background-color: {color};border-radius: 0px;border-top-right-radius: 8px;border-top-left-radius: 8px;")
         self.setFixedHeight(45)
+        self.setStyleSheet(f"background-color: {color};border-radius: 0px;border-top-right-radius: 8px;border-top-left-radius: 8px;")
         

@@ -88,7 +88,6 @@ def registered_domain(hostname: str) -> str | None:
     return '.'.join(parts[-2:]) if len(parts) >= 2 else hostname
 
 
-
 class FilterPage(QWebEnginePage):
     def __init__(self, profile, parent=None):
         super().__init__(profile, parent)

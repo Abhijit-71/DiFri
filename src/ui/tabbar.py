@@ -3,19 +3,20 @@ from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
 from PyQt6.QtGui import QIcon
 from .browser import BrowserWindow
 from browser.corebrowser import Browser
-from .dropdown import DownloadTab, DownloadManager
+from .dropdown import DownloadMenu
 from core.utils import resource_path
 
 
 class TabManager(QWidget):
+    
     def __init__(self):
-        super().__init__()
         
+        super().__init__()
         self.index = 1
         
-        self.download_manager = DownloadManager()
-        self.download_tab = DownloadTab(self.download_manager)
-        self.browser_instance = Browser(self.download_manager)
+        # one instance across all sessions
+        self.download_menu = DownloadMenu()
+        self.browser_instance = Browser()
 
         # Main layout
         main_layout = QVBoxLayout()
@@ -74,24 +75,18 @@ class TabManager(QWidget):
 
         # Add tab bar to its own layout
         main_layout.addWidget(self.content_stack)
-        
         self.setLayout(main_layout)
         
+        
         #first browser window
-        self.browser_window = BrowserWindow(self.browser_instance)
-        #self.browser_window.toolbar.download.clicked.connect(self.add_download_tab)
+        self.browser_window = BrowserWindow(self.browser_instance,self)
         
         # Add first tab
         self.tab_bar.addTab("New Tab")
         self.content_stack.addWidget(self.browser_window)
-        
-        self.browser_window.browser.titleChanged.connect(
-            lambda title: self.update_title_icon(self.browser_window, title=title)
-        )
-        self.browser_window.browser.iconChanged.connect(
-            lambda icon: self.update_title_icon(self.browser_window, icon=icon)
-        )
-        
+        self.browser_window.browser.titleChanged.connect(lambda title: self.update_title_icon(self.browser_window, title=title))
+        self.browser_window.browser.iconChanged.connect(lambda icon: self.update_title_icon(self.browser_window, icon=icon))
+       
         # Connect signals
         self.tab_bar.currentChanged.connect(self.content_stack.setCurrentIndex)
         self.tab_bar.tabCloseRequested.connect(self.close_tab)
@@ -99,21 +94,13 @@ class TabManager(QWidget):
         
         
     def add_tab(self, url=None):
-        tab_content = BrowserWindow(self.browser_instance)
-        #tab_content.toolbar.download.clicked.connect(self.add_download_tab)
-
+        tab_content = BrowserWindow(self.browser_instance,self)
         index = self.tab_bar.addTab("")
         self.content_stack.addWidget(tab_content)
-        
         self.tab_bar.setCurrentIndex(index)
         self.index += 1
-        
-        tab_content.browser.titleChanged.connect(
-            lambda title: self.update_title_icon(tab_content, title=title)
-        )
-        tab_content.browser.iconChanged.connect(
-            lambda icon: self.update_title_icon(tab_content, icon=icon)
-        )
+        tab_content.browser.titleChanged.connect(lambda title: self.update_title_icon(tab_content, title=title))
+        tab_content.browser.iconChanged.connect(lambda icon: self.update_title_icon(tab_content, icon=icon))
 
         if url:
             from PyQt6.QtCore import QUrl
@@ -121,15 +108,6 @@ class TabManager(QWidget):
             
         return tab_content
     
-    
-    
-    def add_download_tab(self):
-        tab_content = self.download_tab
-        index = self.tab_bar.addTab("Downloads")
-        self.content_stack.addWidget(tab_content)
-        self.tab_bar.setCurrentIndex(index)
-        self.index += 1
-
 
 
     def close_tab(self, index):
@@ -140,7 +118,7 @@ class TabManager(QWidget):
         self.tab_bar.removeTab(index)
         self.content_stack.removeWidget(widget)
         
-        if widget and widget != self.download_tab:
+        if widget:
             widget.deleteLater()
 
 
