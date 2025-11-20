@@ -5,8 +5,9 @@ from PyQt6.QtWebEngineWidgets import QWebEngineView
 from .coreui import ProgressBar
 from browser.new_filter import FilterPage
 from PyQt6.QtWebEngineCore import QWebEnginePage
+from .dropdown import PermissionDialog 
+from core.utils import resource_path
 import os
-
 
 class BrowserWindow(QWidget):
     
@@ -31,7 +32,7 @@ class BrowserWindow(QWidget):
         self.filtered_page.featurePermissionRequested.connect(self.handle_permission)
         self.browser.createWindow = self.create_window #type:ignore
         
-        html_path = os.path.join(os.getcwd(), "ui/index.html")
+        html_path =  resource_path("ui/index.html")
         file_url = QUrl.fromLocalFile(html_path)
         self.browser.setUrl(file_url)
 
@@ -54,18 +55,20 @@ class BrowserWindow(QWidget):
         self.browser.urlChanged.connect(self.update_urlbox)
 
 
-    def update_urlbox(self, url):
+    def update_urlbox(self, url:QUrl):
         url_string = url.toString()
         self.urlbar.urlbox.setText(url_string)
 
        
     def handle_downloads(self,download):
         suggested_name = download.downloadFileName()
+        default_download_dir = os.path.join(os.environ["USERPROFILE"], "Downloads")
+        suggested_path = os.path.join(default_download_dir, suggested_name)
 
         path,_ = QFileDialog.getSaveFileName(
             None,
             "DiFri Download Manager",
-            suggested_name,
+            suggested_path,
         )
 
         if path:
@@ -80,17 +83,29 @@ class BrowserWindow(QWidget):
             
     def handle_fullscreen(self, request):
         if request.toggleOn():
-            self.showFullScreen()
+            self.showMaximized()
         else:
             self.showNormal()
         request.accept()
     
     
-    def handle_permission(self, url, feature, callback):
-        if feature == QWebEnginePage.Feature.Clipboard: #type:ignore
-            callback(True)
+    def handle_permission(self, url, feature):
+        origin = url.toString()
+        dialog = PermissionDialog(feature, origin)
+        result = dialog.exec()
+        allowed = dialog.allowed
+        if allowed:
+            self.filtered_page.setFeaturePermission(
+                url,
+                feature,
+                QWebEnginePage.PermissionPolicy.PermissionGrantedByUser
+            )
         else:
-            callback(True)
+            self.filtered_page.setFeaturePermission(
+                url,
+                feature,
+                QWebEnginePage.PermissionPolicy.PermissionDeniedByUser
+            )
       
         
     def create_window(self, window_type):

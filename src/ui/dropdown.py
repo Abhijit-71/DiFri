@@ -1,7 +1,7 @@
-from PyQt6.QtWidgets import (QMenu,QWidget,QWidgetAction,QVBoxLayout,QLabel,QHBoxLayout,QPushButton,QProgressBar,QFileIconProvider)
-from PyQt6.QtCore import QFileInfo
+from PyQt6.QtWidgets import (QMenu,QDialog,QWidget,QWidgetAction,QVBoxLayout,QLabel,QHBoxLayout,QPushButton,QProgressBar,QFileIconProvider)
+from PyQt6.QtCore import QFileInfo , Qt
 from PyQt6.QtGui import QAction,QIcon
-from PyQt6.QtWebEngineCore import QWebEngineDownloadRequest
+from PyQt6.QtWebEngineCore import QWebEngineDownloadRequest , QWebEnginePage
 #from core.utils import resource_path
 
 #https://www.thinkbroadband.com/download   === test url
@@ -200,4 +200,96 @@ class MenuDrop(QMenu):
                 margin-right: 6px;
             }
         """)
+      
         
+class PermissionDialog(QDialog):
+    def __init__(self, feature, origin: str):
+        super().__init__()
+        self.setWindowTitle("Permission Request")
+        self.setFixedSize(350, 150)
+
+        layout = QVBoxLayout()
+
+        label = QLabel(f"<b>{origin}</b><br>is requesting access to : <b>{self.feature_text(feature)}</b>")
+        label.setAlignment(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(label)
+
+        btn_layout = QHBoxLayout()
+        self.allow_btn = QPushButton("Allow")
+        self.block_btn = QPushButton("Block")
+        self.allow_btn.setObjectName("allow")
+        self.block_btn.setObjectName("block")
+        btn_layout.addWidget(self.allow_btn)
+        btn_layout.addWidget(self.block_btn)
+        layout.addLayout(btn_layout)
+
+        self.setLayout(layout)
+        self.setStyleSheet("""
+        QDialog {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+        }
+
+        QLabel {
+            color: #f0f0f0;
+            font-size: 14px;
+        }
+
+        QPushButton {
+            background-color: #2d2d2d;
+            border: 1px solid #3a3a3a;
+            border-radius: 8px;
+            padding: 6px 14px;
+            color: #f0f0f0;
+            font-size: 14px;
+        }
+
+        QPushButton:hover {
+            background-color: #3a3a3a;
+        }
+
+        QPushButton:pressed {
+            background-color: #444;
+        }
+        
+QPushButton#allow:hover {
+    background-color: #21C55D;      /* vibrant green */
+    border: 1px solid #21C55D;
+}
+
+QPushButton#block:hover {
+    background-color: #F04444;      /* vibrant red */
+    border: 1px solid #F04444;
+}
+""")
+
+        
+        self.allowed = False
+
+        self.allow_btn.clicked.connect(self.allow)
+        self.block_btn.clicked.connect(self.block)
+    
+    def feature_text(self,feature):
+        mapping = {
+        QWebEnginePage.Feature.Geolocation: "Location",
+        QWebEnginePage.Feature.MediaAudioCapture: "Microphone",
+        QWebEnginePage.Feature.MediaVideoCapture: "Camera",
+        QWebEnginePage.Feature.MediaAudioVideoCapture: "Camera & Microphone",
+        QWebEnginePage.Feature.DesktopVideoCapture: "Screen",
+        QWebEnginePage.Feature.DesktopAudioVideoCapture: "Screen (with audio)",
+        QWebEnginePage.Feature.Notifications: "Notifications",
+        QWebEnginePage.Feature.ClipboardReadWrite: "Clipboard",  #type:ignore
+        QWebEnginePage.Feature.MouseLock: "Pointer Lock", 
+        }
+        if mapping[feature]:
+            return mapping[feature]
+        else:
+            return "Unknown Feature"
+    
+    def allow(self):
+        self.allowed = True
+        self.accept()
+
+    def block(self):
+        self.allowed = False
+        self.reject()

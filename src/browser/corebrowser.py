@@ -16,8 +16,10 @@ class Browser:
         """why this works ?? ==> Earlier , profile was instanciated many times creating multiple profiles , now only one profile 
          same name does not mean one profile . May also create many instaces of a profile"""
         
-        profile_path = os.path.join(os.getcwd(),"user_data")
-        cache_path = os.path.join(os.getcwd(),"user_cache")
+        app_data_path = os.path.join(os.environ["LOCALAPPDATA"],"DiFri")
+        profile_path = os.path.join(app_data_path,"user_data")
+        cache_path = os.path.join(app_data_path,"user_cache")
+        os.makedirs(app_data_path, exist_ok=True)
         os.makedirs(profile_path, exist_ok=True)
         os.makedirs(cache_path, exist_ok=True)
         self.profile = QWebEngineProfile("user_data")

@@ -5,7 +5,7 @@ a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
-    datas=[('svg/', 'svg'),('ui/index.html', 'ui')],
+    datas=[('svg/', 'svg'),('ui/index.html', 'ui'),('browser/keywords.dat','browser')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},

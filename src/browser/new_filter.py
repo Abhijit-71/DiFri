@@ -1,8 +1,8 @@
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtCore import QUrl
 from urllib.parse import urlparse, parse_qs
-import requests , re , os , pickle
-
+import requests , re , pickle
+from core.utils import resource_path
 
 html = """
 <html>
@@ -45,15 +45,16 @@ html = """
     </head>
     <body>
         <div class="card">
-            <h2>🚫 Blocked Search</h2>
-            <p>Your search contains blocked keywords or Domain.<br>
+            <h2>🚫 Blocked Search or Network Error</h2>
+            <p>Check your network connection.<br>
+            Your search contains blocked keywords or Domain.<br>
             Please revise your query and url, then try again.</p>
         </div>
     </body>
 </html>
 """
 
-path = os.path.join(os.getcwd(), "browser/keywords.dat")
+path = resource_path("browser/keywords.dat")
 with open(path, "rb") as file:
     KEYWORDS = pickle.load(file)
 
@@ -120,3 +121,4 @@ class FilterPage(QWebEnginePage):
                 return False
 
         return super().acceptNavigationRequest(url, nav_type, isMainFrame)
+    
