@@ -4,7 +4,7 @@ from PyQt6.QtCore import QUrl
 from PyQt6.QtWebEngineWidgets import QWebEngineView 
 from .coreui import ProgressBar
 from browser.new_filter import FilterPage
-from PyQt6.QtWebEngineCore import QWebEnginePage
+from PyQt6.QtWebEngineCore import QWebEnginePage , QWebEngineSettings
 from .dropdown import PermissionDialog 
 from core.utils import resource_path
 import os
@@ -44,7 +44,7 @@ class BrowserWindow(QWidget):
         navbar = Navigation(self.browser)
         self.urlbar = URLTab(self.browser)
         self.toolbar = Toolbar(navbar, self.urlbar,self.tab_manager.download_menu)
-
+        self.toolbar.darkbtn.clicked.connect(self.dark_mode)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
@@ -106,8 +106,13 @@ class BrowserWindow(QWidget):
                 feature,
                 QWebEnginePage.PermissionPolicy.PermissionDeniedByUser
             )
-      
-        
+    
+    def dark_mode(self):
+        if self.filtered_page.profile().settings().testAttribute(QWebEngineSettings.WebAttribute.ForceDarkMode):  #type:ignore
+            self.filtered_page.profile().settings().setAttribute(QWebEngineSettings.WebAttribute.ForceDarkMode,False)  #type:ignore
+        else:
+            self.filtered_page.profile().settings().setAttribute(QWebEngineSettings.WebAttribute.ForceDarkMode,True) #type:ignore
+    
     def create_window(self, window_type):
         new_tab = self.tab_manager.add_tab() if self.tab_manager else None
         return new_tab.browser if new_tab else None

@@ -111,12 +111,14 @@ class Toolbar(QWidget):
         self.downloadbtn =HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
         self.downloadbtn.setStyleSheet("QPushButton::menu-indicator { image: none; }")
         self.downloadbtn.setMenu(downnload_man)
+        self.darkbtn =HoverButton('svg/light-mode.svg','svg/dark-mode.svg','svg/light-mode.svg', 20)
+        menu_layout.addWidget(self.darkbtn)
         menu_layout.addWidget(self.downloadbtn)
         menu_layout.addWidget(self.menu)
         
         url_layout = QHBoxLayout()
         url_layout.setContentsMargins(0,0,0,0)
-        url_layout.setSpacing(20)
+        url_layout.setSpacing(15)
         url_layout.addWidget(navbar)
         url_layout.addWidget(urltab)
 
