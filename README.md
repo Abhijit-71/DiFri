@@ -1,7 +1,7 @@
 ### Do check the Desktop branch for latest commits on desktop build , android development is paused by the owner if intrested you can visit Android branch.
 
 # DiFri Browser
-![Project logo](Desktop/svg/dbrowser_logo.svg)
+![Project logo](Desktop/dbrowser_logo.ico)
 
 
 
@@ -99,11 +99,10 @@ uv run main.py
 
 ## Contributors 
 
-Thanks goes to these wonderful people:
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="https://github.com/Abhijit-71"><img src="https://avatars.githubusercontent.com/u/yourid?s=50" /></a>
-<a href="https://github.com/Riki-Hershowitz"><img src="https://avatars.githubusercontent.com/u/theirid?s=50" /></a>
+<a href="https://github.com/Abhijit-71"><img src="https://github.com/Abhijit-71.png" width="40" style="object-fit: contain; border-radius: 8px;"/></a>
+<a href="https://github.com/Riki-Hershowitz"><img src="https://github.com/Riki-Hershowitz.png" width="40" style="object-fit: contain; border-radius: 8px;" /></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
