@@ -423,7 +423,7 @@
       }
 
       .features-grid {
-        column-count: 2; /* number of columns */
+        column-count: 2;
         column-gap: 0px;
       }
 
@@ -471,6 +471,7 @@
         border: 1px solid rgba(99, 102, 241, 0.15);
         break-inside: avoid;
         margin-bottom: 15px;
+        transition: all 0.3s ease;
       }
 
       .feature-card:hover {
@@ -664,25 +665,6 @@
         color: #a78bfa;
       }
 
-      /* Responsive */
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2.5rem;
-        }
-
-        .tagline {
-          font-size: 1.2rem;
-        }
-
-        .section-title {
-          font-size: 2rem;
-        }
-
-        .features-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
       .nav-blur {
         position: fixed;
         top: 0;
@@ -816,6 +798,277 @@
         justify-content: center;
         align-items: center;
         margin-top: 40px;
+      }
+
+      /* Mobile Responsive Styles */
+      @media (max-width: 1024px) {
+        .container {
+          padding: 0 50px;
+        }
+
+        .about-content {
+          max-width: 80vw;
+        }
+
+        .timeline {
+          max-width: 80vw;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 20px;
+        }
+
+        /* Navigation */
+        .nav-blur {
+          width: 94%;
+          padding: 12px 15px;
+          margin-top: 8px;
+        }
+
+        .nav-container {
+          gap: 15px;
+          flex-wrap: wrap;
+        }
+
+        .nav-container a {
+          font-size: 0.85rem;
+        }
+
+        /* Hero Section */
+        .hero {
+          padding-top: 100px;
+          padding-bottom: 40px;
+        }
+
+        .logo {
+          width: 120px;
+          height: 120px;
+          margin-bottom: 30px;
+        }
+
+        h1 {
+          font-size: 2.5rem;
+          letter-spacing: -1px;
+          margin-bottom: 20px;
+        }
+
+        .tagline {
+          font-size: 1.1rem;
+          padding: 0 10px;
+          margin-bottom: 35px;
+        }
+
+        .download-btn {
+          padding: 16px 40px;
+          font-size: 1rem;
+        }
+
+        .version {
+          font-size: 0.85rem;
+        }
+
+        /* Features Section */
+        .features {
+          padding: 60px 0;
+        }
+
+        .section-title {
+          font-size: 2rem;
+          margin-bottom: 40px;
+        }
+
+        .features-grid {
+          column-count: 1;
+          column-gap: 0;
+        }
+
+        .feature-card {
+          width: 100%;
+          min-height: auto;
+          padding: 25px;
+          margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+          font-size: 1.3rem;
+        }
+
+        .feature-card p {
+          font-size: 0.95rem;
+        }
+
+        .block-png,
+        .tab-png,
+        .home-png,
+        .pdf-png,
+        .dark-png {
+          width: 100%;
+        }
+
+        .down-png {
+          width: 60%;
+        }
+
+        /* Demo Section */
+        .demo {
+          padding: 10px 0;
+        }
+
+        .demo-gif {
+          margin: 10px auto 0;
+        }
+
+        .demo-gif img{
+          border-radius: 10px;
+        }
+
+        /* About Section */
+        .about {
+          padding: 60px 0;
+        }
+
+        .about-content {
+          max-width: 100%;
+        }
+
+        .about-content p {
+          font-size: 0.8rem;
+          margin-bottom: 20px;
+        }
+
+        .tech-stack {
+          gap: 10px;
+          margin-top: 30px;
+        }
+
+        .tech-badge {
+          padding: 10px 20px;
+          font-size: 0.9rem;
+        }
+
+        .difri-container {
+          max-width: 100%;
+        }
+
+        .aboutus {
+          margin-top: 30px;
+        }
+
+        .contrib-card {
+          width: calc(50% - 10px);
+          padding: 15px;
+        }
+
+        .contrib-card img {
+          width: 60px;
+          height: 60px;
+        }
+
+        .contrib-card h3 {
+          font-size: 1rem;
+        }
+
+        .github {
+          margin-top: 30px;
+        }
+
+        /* Future Plans Section */
+        .future {
+          padding: 60px 0;
+        }
+
+        .timeline {
+          max-width: 100%;
+        }
+
+        .timeline-item {
+          padding: 20px;
+          margin-bottom: 20px;
+        }
+
+        .timeline-item h3 {
+          font-size: 1.2rem;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .timeline-item h3 svg {
+          width: 30px;
+          height: 30px;
+        }
+
+        .timeline-item p {
+          font-size: 0.95rem;
+        }
+
+        .timeline-item:hover {
+          transform: translateX(5px);
+        }
+
+        /* Footer */
+        footer {
+          padding: 40px 0;
+        }
+
+        .footer-links {
+          gap: 15px;
+          flex-direction: column;
+        }
+
+        .footer-links a {
+          font-size: 0.9rem;
+        }
+
+        .contributors {
+          margin-top: 20px;
+          font-size: 0.9rem;
+        }
+
+        footer p {
+          font-size: 0.85rem;
+          padding: 0 10px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .nav-container {
+          gap: 10px;
+        }
+
+        .nav-container a {
+          font-size: 0.8rem;
+        }
+
+        h1 {
+          font-size: 2rem;
+        }
+
+        .tagline {
+          font-size: 1rem;
+        }
+
+        .download-btn {
+          padding: 14px 30px;
+          font-size: 0.95rem;
+        }
+
+        .section-title {
+          font-size: 1.7rem;
+        }
+
+        .feature-card {
+          padding: 20px;
+        }
+
+        .contrib-card {
+          width: 100%;
+        }
+
+        .feature-card:hover {
+          transform: translateY(-5px);
+        }
       }
     </style>
   </head>
