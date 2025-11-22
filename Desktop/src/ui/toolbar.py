@@ -5,6 +5,7 @@ from .coreui import HoverButton
 from PyQt6.QtGui import  QPixmap
 from urllib.parse import quote_plus
 from .dropdown import MenuDrop
+from core.utils import resource_path
 
 
 class Navigation(QWidget):
@@ -13,7 +14,7 @@ class Navigation(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(50, 8, 0, 8)
+        layout.setContentsMargins(0, 8, 0, 8)
         layout.setSpacing(10)
 
         self.back = HoverButton('svg/back.svg','svg/back_pressed.svg','svg/back_pressed.svg', 20)
@@ -42,7 +43,7 @@ class URLTab(QWidget):
         layout.addStretch()
 
         self.sengine = QLabel()
-        self.sengine.setPixmap(QPixmap('svg/google_logo.svg'))
+        self.sengine.setPixmap(QPixmap(resource_path('svg/google_logo.svg')))
         self.sengine.setFixedSize(30,30)
         self.sengine.setScaledContents(True)
         self.sengine.setStyleSheet("background: transparent;")
@@ -51,8 +52,7 @@ class URLTab(QWidget):
 
         self.urlbox = QLineEdit()
         self.urlbox.setFixedHeight(35)
-        self.urlbox.setMinimumWidth(200)
-        self.urlbox.setMaximumWidth(1000)
+        self.urlbox.setMinimumWidth(400)
         self.urlbox.setPlaceholderText("Search with google or enter url .....")
         line_style = """
             QLineEdit {
@@ -79,12 +79,13 @@ class URLTab(QWidget):
         self.browser = browser
         self.urlbox.returnPressed.connect(lambda: self.change_src(self.urlbox.text()))
 
+
     def change_src(self,src:str):
-        if src.startswith('https://') or src.startswith('http://'):
-            # Check if it's a PDF
-            if src.lower().endswith('.pdf'):
-                print(f"[PDF] Detected PDF URL: {src}")
-            self.browser.setUrl(QUrl(src))
+        if '.' in src and ' ' not in src:
+            if src.startswith('https://') or src.startswith('http://') or src.startswith('file:///'):
+                self.browser.setUrl(QUrl(src))
+            else:
+                self.browser.setUrl(QUrl('https://'+src))
         else:
             query = quote_plus(src)
             url = f"https://www.google.com/search?q={query}"
@@ -94,42 +95,40 @@ class URLTab(QWidget):
 
 
 
+
 class Toolbar(QWidget):
-    def __init__(self, navbar, urltab, color="#47327D"):
+    def __init__(self, navbar, urltab,downnload_man,color="#3a2570"):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-
-        self.home = HoverButton('svg/home_tab.svg','svg/home_tab_pressed.svg','svg/home_tab_pressed.svg', 22)
 
         self.menu = HoverButton('svg/menu.svg','svg/menu_pressed.svg','svg/menu_pressed.svg', 24)
         self.menu.setMenu(MenuDrop()) #menu added
         self.menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 
-        self.download = HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
-         
         menu_layout = QHBoxLayout()
-        menu_layout.setContentsMargins(100,0,0,0)
+        menu_layout.setContentsMargins(20,0,0,0)
         menu_layout.setSpacing(30)
-        menu_layout.addWidget(self.download)
+        self.downloadbtn =HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
+        self.downloadbtn.setStyleSheet("QPushButton::menu-indicator { image: none; }")
+        self.downloadbtn.setMenu(downnload_man)
+        self.darkbtn =HoverButton('svg/light-mode.svg','svg/dark-mode.svg','svg/light-mode.svg', 20)
+        menu_layout.addWidget(self.darkbtn)
+        menu_layout.addWidget(self.downloadbtn)
         menu_layout.addWidget(self.menu)
         
         url_layout = QHBoxLayout()
         url_layout.setContentsMargins(0,0,0,0)
-        url_layout.setSpacing(10)
+        url_layout.setSpacing(15)
         url_layout.addWidget(navbar)
         url_layout.addWidget(urltab)
-
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20,0,20,0)
         layout.setSpacing(30)
-        layout.addWidget(self.home)
-        
         
         layout.addLayout(url_layout)
         layout.addLayout(menu_layout)
         
-        
-        self.setStyleSheet(f"background-color: {color};border-radius: 0px;border-top-right-radius: 8px;")
         self.setFixedHeight(45)
+        self.setStyleSheet(f"background-color: {color};border-radius: 0px;border-top-right-radius: 8px;border-top-left-radius: 8px;")
         

@@ -10,3 +10,12 @@ wheels/
 .venv
 Desktop/user_cache/
 Desktop/user_data/
+
+#Desktop builds
+Desktop/Output/
+Desktop/src/dist/
+Desktop/src/build/
+Desktop/src/user_data/
+Desktop/src/user_cache/
+
+# do check C:\User\AppData\Public\DiFri for more cache

@@ -1,3 +1,6 @@
+
+# Place holder file for project , now used a icon/logo finder in kivymd list
+
 from kivy.lang import Builder
 from kivy.properties import StringProperty
 

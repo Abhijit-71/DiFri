@@ -1,18 +1,20 @@
 from PyQt6.QtWidgets import QPushButton ,QProgressBar
 from PyQt6.QtGui import QIcon
 from PyQt6.QtCore import QSize
+from PyQt6.QtGui import QIcon
+from core.utils import resource_path
 
 class HoverButton(QPushButton):
     def __init__(self, normal:str, hover:str, pressed:str, size:int, parent=None):
         super().__init__(parent)
-        self.icon_normal = QIcon(normal)
-        self.icon_hover = QIcon(hover)
-        self.icon_pressed = QIcon(pressed)
+        self.icon_normal = QIcon(resource_path(normal))
+        self.icon_hover = QIcon(resource_path(hover))
+        self.icon_pressed = QIcon(resource_path(pressed))
 
         self.setIcon(self.icon_normal)
         self.setIconSize(QSize(size, size))
         self.setFixedSize(size,size)
-        self.setFlat(True)  # Important: disables native style
+        self.setFlat(True)  # important: disables native style
 
     def enterEvent(self, event):
         self.setIcon(self.icon_hover)
@@ -41,7 +43,7 @@ class IconButton(QPushButton):
         self.setIcon(QIcon(icon))
         self.setIconSize(QSize(size, size))
         self.setFixedSize(size, size)
-        self.setFlat(True)  # Now not used, only for testing buttons with one state icon
+        self.setFlat(True)  # now not used , only for testing buttons with one state icon
 
         
 
