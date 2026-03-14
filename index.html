@@ -164,12 +164,7 @@
         text-align: center;
         position: relative;
         overflow: hidden;
-        background: linear-gradient(
-          180deg,
-          #0a0a0f 0%,
-          #14141f 50%,
-          #1a1a2e 100%
-        );
+        background: #0b0b0b;
         min-height: 100vh;
         padding-top: 80px;
       }
@@ -182,11 +177,7 @@
         left: -25%;
         width: 100%;
         height: 100%;
-        background: radial-gradient(
-          circle,
-          rgba(99, 102, 241, 0.15) 0%,
-          transparent 70%
-        );
+        
         animation: orbFloat1 20s ease-in-out infinite;
         filter: blur(80px);
       }
@@ -198,11 +189,6 @@
         right: -25%;
         width: 100%;
         height: 100%;
-        background: radial-gradient(
-          circle,
-          rgba(139, 92, 246, 0.12) 0%,
-          transparent 70%
-        );
         animation: orbFloat2 25s ease-in-out infinite;
         filter: blur(80px);
       }
@@ -214,7 +200,7 @@
         width: 100%;
         height: 100%;
         z-index: 1;
-        opacity: 0.5;
+        opacity: 0.7;
       }
 
       .grid-background canvas {
@@ -266,25 +252,20 @@
       }
 
       .logo {
-        width: 160px;
+        width: 400px;
         height: 160px;
         margin: 0 auto 40px;
-        background: linear-gradient(
-          135deg,
-          rgba(99, 102, 241, 0.1) 0%,
-          rgba(139, 92, 246, 0.1) 100%
-        );
-        border-radius: 35px;
+        
+        border-radius: 40px;
         display: flex;
         align-items: center;
         justify-content: center;
-        backdrop-filter: blur(20px);
-        border: 2px solid rgba(99, 102, 241, 0.2);
-        padding: 25px;
+         background: rgba(255, 255, 255, 0.022); /* semi-transparent */
+        border: 1px solid rgba(255, 255, 255, 0.2); /* subtle border */
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* soft shadow */
         position: relative;
         animation: logoFloat 6s ease-in-out infinite;
-        box-shadow: 0 0 60px rgba(99, 102, 241, 0.15),
-          inset 0 0 20px rgba(99, 102, 241, 0.05);
+        
       }
 
       @keyframes logoFloat {
@@ -297,19 +278,7 @@
         }
       }
 
-      .logo::before {
-        content: "";
-        position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: linear-gradient(45deg, #6366f1, #8b5cf6, #6366f1);
-        border-radius: 35px;
-        z-index: -1;
-        opacity: 0;
-        animation: borderPulse 3s ease-in-out infinite;
-      }
+      
 
       @keyframes borderPulse {
         0%,
@@ -368,15 +337,13 @@
       .download-btn {
         display: inline-block;
         padding: 20px 55px;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        color: #fff;
+        background: linear-gradient(135deg, #edecf5 0%, #a398ff 100%);
+        color: #1e1e1e;
         text-decoration: none;
         border-radius: 50px;
         font-size: 1.2rem;
         font-weight: 700;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3),
-          inset 0 1px 0 rgba(255, 255, 255, 0.1);
         position: relative;
         overflow: hidden;
       }
@@ -391,7 +358,7 @@
         background: linear-gradient(
           90deg,
           transparent,
-          rgba(255, 255, 255, 0.3),
+          rgba(255, 255, 255, 0.455),
           transparent
         );
         transition: left 0.5s;
@@ -403,8 +370,6 @@
 
       .download-btn:hover {
         transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.4),
-          inset 0 1px 0 rgba(255, 255, 255, 0.2);
       }
 
       .download-btn:active {
@@ -420,7 +385,7 @@
       /* Features Section */
       .features {
         padding: 100px 0;
-        background: linear-gradient(to left, #211e39 10%, #1a1a2e 100%);
+        background: #0b0b0b;
         position: relative;
       }
 
@@ -470,29 +435,17 @@
         gap: 10px;
         flex-direction: column;
         min-height: 300px;
-        background: linear-gradient(
-          135deg,
-          rgba(99, 102, 241, 0.05),
-          rgba(139, 92, 246, 0.05)
-        );
-        backdrop-filter: blur(10px);
+        background: #202020;
         padding: 40px;
         border-radius: 20px;
-        border: 1px solid rgba(99, 102, 241, 0.15);
         break-inside: avoid;
         margin-bottom: 15px;
         transition: all 0.3s ease;
       }
 
       .feature-card:hover {
-        transform: translateY(-10px);
-        background: linear-gradient(
-          135deg,
-          rgba(99, 102, 241, 0.08) 0%,
-          rgba(139, 92, 246, 0.08) 100%
-        );
-        border-color: rgba(99, 102, 241, 0.3);
-        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.15);
+        transform: translateY(-3px);
+        background: #0b0b0b ;
       }
 
       .feature-card h3 {
@@ -514,7 +467,7 @@
       /* Demo Section */
       .demo {
         padding: 100px 0;
-        background: #14141f;
+        background: #151515;
       }
 
       .demo-gif {
@@ -526,14 +479,14 @@
       .demo-gif img {
         width: 100%;
         border-radius: 20px;
-        box-shadow: 0 20px 80px rgba(99, 102, 241, 0.25);
+        
         border: 1px solid rgba(99, 102, 241, 0.2);
       }
 
       /* About Section */
       .about {
         padding: 100px 0;
-        background: #0f0f17;
+        background: #0b0b0b;
       }
 
       .about-content {
@@ -549,43 +502,10 @@
         color: #a1a1aa;
       }
 
-      .tech-stack {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-top: 40px;
-      }
-
-      .tech-badge {
-        background: linear-gradient(
-          135deg,
-          rgba(99, 102, 241, 0.1) 0%,
-          rgba(139, 92, 246, 0.1) 100%
-        );
-        padding: 12px 28px;
-        border-radius: 25px;
-        font-weight: 600;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        color: #c4b5fd;
-        transition: all 0.3s ease;
-      }
-
-      .tech-badge:hover {
-        background: linear-gradient(
-          135deg,
-          rgba(99, 102, 241, 0.15) 0%,
-          rgba(139, 92, 246, 0.15) 100%
-        );
-        border-color: rgba(99, 102, 241, 0.4);
-        transform: translateY(-2px);
-      }
-
       /* Future Plans Section */
       .future {
         padding: 100px 0;
-        background: #14141f;
+        background: #151515;
       }
 
       .timeline {
@@ -624,8 +544,7 @@
           rgba(99, 102, 241, 0.08) 0%,
           rgba(139, 92, 246, 0.08) 100%
         );
-        border-left-color: #8b5cf6;
-        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+        border-left-color: #a398ff;
       }
 
       .timeline-item p {
@@ -666,7 +585,7 @@
       }
 
       .contributors a {
-        color: #8b5cf6;
+        color: #a398ff;
         text-decoration: none;
         transition: color 0.3s ease;
       }
@@ -695,7 +614,6 @@
         display: flex;
         justify-content: center;
 
-        box-shadow: 0 8px 25px rgba(0, 0, 15, 0.25);
       }
 
       .nav-container {
@@ -738,19 +656,17 @@
           rgba(139, 92, 246, 0.05)
         );
         backdrop-filter: blur(10px);
-        border: 1px solid #dddddd;
         padding: 20px;
         width: 200px;
         border-radius: 14px;
         text-align: center;
         color: #eee;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
 
       .contrib-card:hover {
+        background: #0b0b0b;
         transform: translateY(-6px);
-        box-shadow: 0 0 18px rgba(202, 158, 247, 0.55);
       }
 
       .contrib-card img {
@@ -948,16 +864,6 @@
           margin-bottom: 20px;
         }
 
-        .tech-stack {
-          gap: 10px;
-          margin-top: 30px;
-        }
-
-        .tech-badge {
-          padding: 10px 20px;
-          font-size: 0.9rem;
-        }
-
         .difri-container {
           max-width: 100%;
         }
@@ -1083,7 +989,6 @@
     </style>
   </head>
   <body>
-    <!-- Glass Morphic Navbar 
     <nav class="nav-blur">
       <div class="nav-container">
         <a href="#features">Features</a>
@@ -1092,7 +997,7 @@
         <a href="#future">Roadmap</a>
         <a href="https://github.com/Abhijit-71/DiFri" target="_blank">GitHub</a>
       </div>
-    </nav>-->
+    </nav>
     <!-- Hero Section -->
     <section
       class="hero"
@@ -1102,23 +1007,23 @@
       <div class="grid-background">
         <canvas id="gridCanvas"></canvas>
       </div>
+      
       <div class="container">
         <div class="hero-content">
-          <div class="logo">
-            <img
+          <img
+              class="logo"
               src="logo_title_dark.png"
               alt="DiFri Browser Logo - Distraction Free Browser"
               itemprop="image"
               onerror="this.parentElement.innerHTML='🌐'"
             />
-          </div>
           
           <p class="tagline" itemprop="description">
             Your distraction-free companion for focused, productive browsing
             with built-in content filtering
           </p>
           <a
-            href="https://github.com/Abhijit-71/DiFri/releases/download/DiFri2.0/DiFri_setup.exe"
+            href="https://github.com/Abhijit-71/DiFri/releases/download/DiFri_v2.1.0/DiFri_setup.exe"
             class="download-btn"
             itemprop="downloadUrl"
             target="_blank"
@@ -1127,7 +1032,7 @@
             Download for Windows
           </a>
           <p class="version">
-            v<span itemprop="softwareVersion">2.0.0</span> | Free & Open Source
+            v<span itemprop="softwareVersion">2.1.0</span> | Free & Open Source
           </p>
         </div>
       </div>
@@ -1249,11 +1154,6 @@
               fully free and open for contributions.
 
             </p>
-            <div class="tech-stack" itemprop="keywords">
-              <span class="tech-badge">Python 3.8-3.12</span>
-              <span class="tech-badge">PyQt6</span>
-              <span class="tech-badge">Chromium Engine</span>
-            </div>
 
             <!-- ABOUT US SECTION -->
             
@@ -1465,7 +1365,6 @@
       // Initial draw
       resizeCanvas();
     </script>
-    <script src="https://keepandroidopen.org/banner.js?size=mini">
     </script>
   </body>
 </html>
