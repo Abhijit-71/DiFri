@@ -13,6 +13,7 @@ class TabManager(QWidget):
         
         super().__init__()
         self.index = 1
+        self.toggle_callback = None
         
         # one instance across all sessions
         self.download_menu = DownloadMenu()
@@ -33,7 +34,7 @@ class TabManager(QWidget):
                 background: transparent;
             }
             QTabBar::tab {
-                background: #2e2e2e;
+                background: #2a2a2a;
                 color: #ffffff;
                 padding: 6px 10px 6px 30px;
                 margin-right: 4px;
@@ -41,13 +42,13 @@ class TabManager(QWidget):
                 width: 100px;
             }
             QTabBar::tab:selected {
-                background:#3a2570;
+                background:#3a3a3a;
             }
             QTabBar::tab:hover {
-                border:1px solid #b4aaff;
+                border:0.8px solid #bd93f9;
             }
             QTabBar::tab:selected:hover {
-                border:1px solid #d6c8ff;
+                border:0.8px solid #bd93f9;
             }
         """)
         
@@ -90,8 +91,14 @@ class TabManager(QWidget):
         # Connect signals
         self.tab_bar.currentChanged.connect(self.content_stack.setCurrentIndex)
         self.tab_bar.tabCloseRequested.connect(self.close_tab)
-        
-        
+    
+     # Connect for all existing browser windows -- show tabs button  
+    def set_toggle_callback(self, callback):
+        self.toggle_callback = callback
+        for i in range(self.content_stack.count()):
+            widget = self.content_stack.widget(i)
+            widget.toolbar.tabshow.clicked.connect(callback) #type:ignore
+            
         
     def add_tab(self, url=None):
         tab_content = BrowserWindow(self.browser_instance,self)
@@ -101,6 +108,9 @@ class TabManager(QWidget):
         self.index += 1
         tab_content.browser.titleChanged.connect(lambda title: self.update_title_icon(tab_content, title=title))
         tab_content.browser.iconChanged.connect(lambda icon: self.update_title_icon(tab_content, icon=icon))
+
+        if self.toggle_callback:
+            tab_content.toolbar.tabshow.clicked.connect(self.toggle_callback)
 
         if url:
             from PyQt6.QtCore import QUrl

@@ -60,12 +60,17 @@ with open(path, "rb") as file:
 
 
 def safe_domain(domain:str) -> bool|None:
+    
     if domain is None:
         return True
+    
     domain_pattern = re.compile(
     r"^(?!-)([A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,}$"
     )
     if not domain_pattern.match(domain):
+        return True
+    
+    if domain.endswith(("gov.in","nic.in")):
         return True
     
     url = "https://family.cloudflare-dns.com/dns-query"

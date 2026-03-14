@@ -14,8 +14,8 @@ class Navigation(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         
         layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 8, 0, 8)
-        layout.setSpacing(10)
+        layout.setContentsMargins(20, 8, 0, 8)
+        layout.setSpacing(15)
 
         self.back = HoverButton('svg/back.svg','svg/back_pressed.svg','svg/back_pressed.svg', 20)
         self.back.clicked.connect(browser.back)
@@ -35,24 +35,15 @@ class Navigation(QWidget):
 
 
 class URLTab(QWidget):
-    def __init__(self,browser:QWebEngineView,color="#256eff"):
+    def __init__(self,browser:QWebEngineView):
         super().__init__()
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0,0,0,0)
-        layout.setSpacing(6)
         layout.addStretch()
-
-        self.sengine = QLabel()
-        self.sengine.setPixmap(QPixmap(resource_path('svg/google_logo.svg')))
-        self.sengine.setFixedSize(30,30)
-        self.sengine.setScaledContents(True)
-        self.sengine.setStyleSheet("background: transparent;")
-
-        layout.addWidget(self.sengine)
 
         self.urlbox = QLineEdit()
         self.urlbox.setFixedHeight(35)
-        self.urlbox.setMinimumWidth(400)
+        self.urlbox.setMinimumWidth(100)
         self.urlbox.setPlaceholderText("Search with google or enter url .....")
         line_style = """
             QLineEdit {
@@ -64,7 +55,7 @@ class URLTab(QWidget):
                 font-size: 12px;
             }
             QLineEdit:focus {
-                border: 1px solid #6aaaff;
+                border: 0.8px solid #bd93f9;
                 background: rgba(255,255,255,0.02);
             }
             QLineEdit::placeholder {
@@ -74,7 +65,6 @@ class URLTab(QWidget):
         self.urlbox.setStyleSheet(line_style)
         self.urlbox.setSizePolicy(QSizePolicy.Policy.Expanding , QSizePolicy.Policy.Fixed)
         layout.addWidget(self.urlbox,1)
-        self.setStyleSheet(f"background-color: {color};")
         self.setFixedHeight(45)
         self.browser = browser
         self.urlbox.returnPressed.connect(lambda: self.change_src(self.urlbox.text()))
@@ -97,7 +87,7 @@ class URLTab(QWidget):
 
 
 class Toolbar(QWidget):
-    def __init__(self, navbar, urltab,downnload_man,color="#3a2570"):
+    def __init__(self, navbar, urltab,downnload_man,color="#2a2a2a"):
         super().__init__()
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
 
@@ -105,22 +95,30 @@ class Toolbar(QWidget):
         self.menu.setMenu(MenuDrop()) #menu added
         self.menu.setStyleSheet("QPushButton::menu-indicator { image: none; }")
 
+
         menu_layout = QHBoxLayout()
         menu_layout.setContentsMargins(20,0,0,0)
         menu_layout.setSpacing(30)
+        
         self.downloadbtn =HoverButton('svg/download.svg','svg/download_pressed.svg','svg/download_pressed.svg', 24)
         self.downloadbtn.setStyleSheet("QPushButton::menu-indicator { image: none; }")
         self.downloadbtn.setMenu(downnload_man)
+        
         self.darkbtn =HoverButton('svg/light-mode.svg','svg/dark-mode.svg','svg/light-mode.svg', 20)
         menu_layout.addWidget(self.darkbtn)
         menu_layout.addWidget(self.downloadbtn)
         menu_layout.addWidget(self.menu)
+     
         
         url_layout = QHBoxLayout()
         url_layout.setContentsMargins(0,0,0,0)
-        url_layout.setSpacing(15)
+        url_layout.setSpacing(20)
+        
+        self.tabshow =HoverButton('svg/tab.svg','svg/tab_pressed.svg','svg/tab_pressed.svg', 22)
+        url_layout.addWidget(self.tabshow)
         url_layout.addWidget(navbar)
         url_layout.addWidget(urltab)
+
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20,0,20,0)
@@ -129,6 +127,6 @@ class Toolbar(QWidget):
         layout.addLayout(url_layout)
         layout.addLayout(menu_layout)
         
-        self.setFixedHeight(45)
-        self.setStyleSheet(f"background-color: {color};border-radius: 0px;border-top-right-radius: 8px;border-top-left-radius: 8px;")
+        self.setFixedHeight(56)
+        self.setStyleSheet(f"background-color: {color};")
         

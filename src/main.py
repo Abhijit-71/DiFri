@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QUrl
-from ui.mwindow import MainWindow , PaddedWindow
+from ui.mwindow import MainWindow
 import sys,os
 from ui.tabbar import TabManager
 
@@ -19,10 +19,9 @@ tab_manager = TabManager()
 if file_to_open:
     tab_manager.browser_window.browser.setUrl(QUrl.fromLocalFile(os.path.abspath(file_to_open)))
     
-CentralWidget = PaddedWindow(tab_manager.content_stack,"#1e1e1e")
-
+    
 # Create main window with custom title bar
-window = MainWindow(CentralWidget,tab_manager)
+window = MainWindow(tab_manager.content_stack,tab_manager)
 
 
 window.show()

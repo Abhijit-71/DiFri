@@ -32,7 +32,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['svg\\dbrowser_logo.ico'],
+    icon=['svg\\difri_logo.ico'],
 )
 coll = COLLECT(
     exe,
