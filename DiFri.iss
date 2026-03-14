@@ -28,7 +28,7 @@ LicenseFile=LICENSE.txt
 OutputBaseFilename=DiFri_setup
 
 ; Soft-coded icon, must exist inside overall project
-SetupIconFile=dbrowser_logo.ico
+SetupIconFile=difri_logo.ico
 
 SolidCompression=yes
 WizardStyle=modern
@@ -53,7 +53,7 @@ Source: "C:\Users\Abhijit\Desktop\DiFri\src\dist\DiFri\*"; \
     DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; Setup icon (soft coded)
-Source: "C:\Users\Abhijit\Desktop\DiFri\src\svg\dbrowser_logo.ico"; \
+Source: "C:\Users\Abhijit\Desktop\DiFri\src\svg\difri_logo.ico"; \
     DestDir: "{app}"
 
 
