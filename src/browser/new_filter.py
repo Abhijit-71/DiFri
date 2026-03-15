@@ -1,6 +1,6 @@
 from PyQt6.QtWebEngineCore import QWebEnginePage
 from PyQt6.QtCore import QUrl
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse, parse_qs , unquote
 import requests , re , pickle
 from core.utils import resource_path
 
@@ -59,71 +59,41 @@ with open(path, "rb") as file:
     KEYWORDS = pickle.load(file)
 
 
-def safe_domain(domain:str) -> bool|None:
-    
-    if domain is None:
-        return True
-    
-    domain_pattern = re.compile(
-    r"^(?!-)([A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,}$"
-    )
-    if not domain_pattern.match(domain):
-        return True
-    
-    if domain.endswith(("gov.in","nic.in")):
-        return True
-    
-    url = "https://family.cloudflare-dns.com/dns-query"
-    headers = {"accept": "application/dns-json"}
-    params = {"name": domain, "type": "A"}
-    try:
-        response = requests.get(url, headers=headers, params=params, timeout=5)
-        data = response.json()
-        if data['Answer'][0]['data'] == '0.0.0.0':
-            return False 
-        else : 
-            return True  
-    except Exception as e:
-        print(f"Error checking {domain}: {e}")
+def full_url_parser(parsed):
+    combined = "".join([
+        parsed.netloc or "",
+        parsed.path or "",
+        parsed.params or "",
+        parsed.query or "",
+        parsed.fragment or ""
+    ]).lower()
+    combined = unquote(combined)
+
+    # Replace + with space (common in queries)
+    combined = combined.replace("+", " ")
+    # Remove all non-alphanumeric characters (keeps letters/numbers only)
+    combined = re.sub(r"[^a-z0-9]", "", combined)
+    return combined
 
 
-def registered_domain(hostname: str) -> str | None:
-    if not hostname:
-        return None
-    parts = hostname.split('.')
-    return '.'.join(parts[-2:]) if len(parts) >= 2 else hostname
 
 
 class FilterPage(QWebEnginePage):
-    def __init__(self, profile, parent=None):
-        super().__init__(profile, parent)
-        self.web_view = parent  # Store reference to the web view
 
     def acceptNavigationRequest(self, url: QUrl, nav_type, isMainFrame: bool):
-        try:
-            if not isMainFrame:
-                return super().acceptNavigationRequest(url, nav_type, isMainFrame)
-
-            url_string = url.toString()
-            parsed = urlparse(url_string)
-        except Exception as e:
-            print(f"[FILTER] ERROR: {e}", flush=True)
+       
+        if not isMainFrame:
             return super().acceptNavigationRequest(url, nav_type, isMainFrame)
-        
-        # Regular filtering
-        domain = registered_domain(parsed.hostname or "") # takes the browser field and convert to domain format str
-        qs = parse_qs(parsed.query)
-        search_term = qs.get("q", [""])[0].lower()
-        search_term = re.sub(r'[^a-z]+', '', search_term)
 
-        if not safe_domain(domain): #type:ignore
+        parsed = urlparse(url.toString())
+        full_url = full_url_parser(parsed)
+
+
+        # Block full domains
+        if any(k in str(full_url) for k in KEYWORDS):
             self.setHtml(html)
             return False
 
-        if domain in ("google.com", "bing.com", "duckduckgo.com", "yahoo.com","brave.com"):
-            if any(k in search_term for k in KEYWORDS):
-                self.setHtml(html)
-                return False
-
+        # otherwise allow navigation
         return super().acceptNavigationRequest(url, nav_type, isMainFrame)
-    
+
