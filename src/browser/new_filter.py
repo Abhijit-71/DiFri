@@ -31,24 +31,28 @@ html = """
                 transform: scale(1.03);
             }
             h2 {
-                color: #ff4c4c;
+                color: #a398ff;
                 font-size: 32px;
                 margin-bottom: 20px;
-                text-shadow: 0 0 8px rgba(255, 76, 76, 0.5);
+                text-shadow: 0 0 8px rgba(163, 152, 255, 0.5);
             }
             p {
                 color: #cccccc;
                 font-size: 18px;
-                line-height: 1.5;
+                line-height: 1;
             }
         </style>
     </head>
     <body>
         <div class="card">
-            <h2>🚫 Blocked Search or Network Error</h2>
-            <p>Check your network connection.<br>
+            <h2>DiFri Content Filter</h2>
+            <p>Check your network connection.
+            <hr>
             Your search contains blocked keywords or Domain.<br>
-            Please revise your query and url, then try again.</p>
+            Please revise your query and url, then try again.
+            <hr style="margin-top:10px;">
+            Navigate back to solve the problem , if no search violations.<br>
+            </p>
         </div>
     </body>
 </html>
