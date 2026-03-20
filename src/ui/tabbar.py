@@ -93,6 +93,7 @@ class TabManager(QWidget):
         self.tab_bar.tabCloseRequested.connect(self.close_tab)
     
      # Connect for all existing browser windows -- show tabs button  
+  """So , a callback is a relaying mech. which enables the show/hide func from title bar of file mwindow.py to connect to all the tab instances being spawned"""
     def set_toggle_callback(self, callback):
         self.toggle_callback = callback
         for i in range(self.content_stack.count()):
