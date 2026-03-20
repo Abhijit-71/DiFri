@@ -1,7 +1,7 @@
 ### Do check the Desktop branch for latest commits on desktop build , android development is paused if intrested you can visit Android branch.
 
 # DiFri Browser
-![Project logo](Desktop/dbrowser_logo.ico)
+![Project logo](https://abhijit-71.github.io/DiFri/logo_title_dark.png)
 
 
 
@@ -44,10 +44,11 @@ With a builtin in content filter , blocking certain domains and keywords a clean
 ---
 
 ## Demo of Browser
-
+* Now after recent updates it has not been updated
 ![Alt text](Demo/img-1.png)
 ![Alt text](Demo/img-2.png)
 ![Alt text](Demo/img-3.png)
+
 ===============================
 
 
